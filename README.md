@@ -1,4 +1,4 @@
-# NewsScape: Geotagging News System
+# NewScape: Geotagging News System
 
 ## Overview
 
