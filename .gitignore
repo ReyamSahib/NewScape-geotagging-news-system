@@ -1,0 +1,36 @@
+# NewScene - Files that should NOT be uploaded to GitHub
+
+
+# Environment variables and API keys
+.env
+.env.*
+
+# Keep the example environment file on GitHub
+!.env.example
+
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Local persistent database
+*.db
+*.sqlite
+*.sqlite3
+
+# Local database backups
+data/backups/
+
+# macOS generated files
+.DS_Store
+
+# VS Code local settings
+.vscode/
+
+# Temporary/log files
+*.log
+*.tmp
