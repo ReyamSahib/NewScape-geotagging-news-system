@@ -25,56 +25,6 @@ else:
 
 
 
-# INITIAL / OLDER NEWS RETRIEVAL
-
-# This is used when initially collecting older available articles.
-# Unlike the refresh function below, it does not use last_refresh,
-# allowing NewsAPI to return older articles that are still available.
-
-def retrieve_initial_news():
-
-    url = "https://newsapi.org/v2/everything"
-
-    params = {
-        "q": 'UAE OR "United Arab Emirates" OR Dubai OR "Abu Dhabi" OR Sharjah OR Ajman OR Fujairah OR "Ras Al Khaimah" OR "Umm Al Quwain"',
-        "language": "en",
-        "sortBy": "publishedAt",
-        "pageSize": 10
-    }
-
-    headers = {
-        "X-Api-Key": NEWS_API_KEY
-    }
-
-    response = requests.get(url, params=params, headers=headers)
-
-    refresh_data = response.json()
-
-    print("HTTP Status:", response.status_code)
-    print("Status:", refresh_data.get("status"))
-    print("Total Results:", refresh_data.get("totalResults"))
-
-
-    new_articles = refresh_data.get("articles", [])
-
-    seen_urls = set()
-    unique_articles = []
-
-    for article in new_articles:
-        article_url = article.get("url")
-
-        if article_url and article_url not in seen_urls:
-            seen_urls.add(article_url)
-            unique_articles.append(article)
-
-    print("Articles received:", len(new_articles))
-    print("New unique articles:", len(unique_articles))
-    print("Duplicates skipped:", len(new_articles) - len(unique_articles))
-
-    return unique_articles
-
-
-
 # NEWS REFRESH
 
 # INITIAL / OLDER NEWS RETRIEVAL
@@ -135,6 +85,62 @@ def retrieve_initial_news():
 
 
 
+# NEWS REFRESH
+
+# Retrieves recent UAE-related news for repeated system updates.
+# Unlike retrieve_initial_news(), this function only requests articles
+# published within the last two days so that refreshes focus on recent news.
+
+def retrieve_news():
+
+    url = "https://newsapi.org/v2/everything"
+
+    # Retrieve articles published within the last two days.
+    from_date = (
+        datetime.now(timezone.utc) - timedelta(days=2)
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    params = {
+        "q": 'UAE OR "United Arab Emirates" OR Dubai OR "Abu Dhabi" OR Sharjah OR Ajman OR Fujairah OR "Ras Al Khaimah" OR "Umm Al Quwain"',
+        "from": from_date,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "pageSize": 10
+    }
+
+    headers = {
+        "X-Api-Key": NEWS_API_KEY
+    }
+
+    response = requests.get(url, params=params, headers=headers)
+
+    refresh_data = response.json()
+
+    print("HTTP Status:", response.status_code)
+    print("Status:", refresh_data.get("status"))
+    print("Total Results:", refresh_data.get("totalResults"))
+
+    new_articles = refresh_data.get("articles", [])
+
+    # Remove duplicate articles returned within the same NewsAPI response.
+    seen_urls = set()
+    unique_articles = []
+
+    for article in new_articles:
+        article_url = article.get("url")
+
+        if article_url and article_url not in seen_urls:
+            seen_urls.add(article_url)
+            unique_articles.append(article)
+
+    print("Articles received:", len(new_articles))
+    print("New unique articles:", len(unique_articles))
+    print("Duplicates skipped:", len(new_articles) - len(unique_articles))
+
+    return unique_articles
+
+
+
 # LOCAL SETUP TEST
 
 if __name__ == "__main__":
@@ -145,11 +151,11 @@ if __name__ == "__main__":
         print("NewsAPI key loaded successfully")
     else:
         print("API key not found")
-        print("\nTesting initial news retrieval...")
+        print("\nTesting recent news retrieval...")
 
-    initial_articles = retrieve_initial_news()
+    recent_articles = retrieve_news()
 
-    print("\nInitial articles retrieved:", len(initial_articles))
+    print("\nRecent articles retrieved:", len(recent_articles))
 
-    for article in initial_articles:
+    for article in recent_articles:
         print("-", article.get("title"))

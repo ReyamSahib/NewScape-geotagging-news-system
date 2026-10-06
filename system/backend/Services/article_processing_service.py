@@ -214,7 +214,7 @@ if __name__ == "__main__":
     # unnecessary API usage and rate-limit issues.
     processed_articles = process_articles(
         articles,
-        max_articles=2
+        max_articles=20
     )
 
     # Display the final AI processing results.
