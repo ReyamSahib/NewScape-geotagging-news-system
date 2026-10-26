@@ -146,6 +146,8 @@ location = "Dubai World Trade Centre, Dubai"
 
 Do NOT return only "Dubai".
 
+USE CONTEXT CLUES BEFORE ASSIGNING JUST AN EMIRATE.
+
 
 STEP 4 — COUNTRY
 
@@ -306,7 +308,7 @@ Do not guess locations when the evidence is insufficient.
         ],
         response_format={"type": "json_object"},
         temperature=0,
-        reasoning_effort="high"
+        reasoning_effort="medium"
     )
 
     result = json.loads(response.choices[0].message.content)

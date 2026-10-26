@@ -130,6 +130,39 @@ def get_or_create_source(source_name):
 
 
 
+
+def article_exists(article_url):
+    """
+    Check whether an article URL is already stored in the database.
+
+    This check is performed before AI processing so that previously
+    stored articles do not use unnecessary AI or geocoding API calls.
+    """
+    if not article_url:
+        return False
+
+    connection = get_database_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            SELECT news_ID
+            FROM NewsItem
+            WHERE article_URL = %s
+            LIMIT 1;
+            """,
+            (article_url,)
+        )
+
+        return cursor.fetchone() is not None
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
 # NEWS ARTICLE DATABASE OPERATIONS
 
 def insert_news_article(article):
