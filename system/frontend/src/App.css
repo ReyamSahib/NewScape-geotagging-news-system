@@ -1,0 +1,703 @@
+/* =========================
+   NEWSCAPE MAIN DESIGN
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f1f6fc;
+  color: #142c55;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  background: linear-gradient(
+    120deg,
+    #dfedfc 0%,
+    #eaf4ff 43%,
+    #f8fbff 100%
+  );
+}
+
+/* =========================
+   NAVIGATION BAR
+========================= */
+
+.navbar {
+  height: 84px;
+  padding: 0 35px;
+  background: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #e4ebf4;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  color: #1672ef;
+  font-size: 49px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.brand-text h1 {
+  color: #092d65;
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.8px;
+}
+
+.brand-text span {
+  color: #64748b;
+  font-size: 11px;
+  display: block;
+  margin-top: 2px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  height: 100%;
+}
+
+.nav-links a,
+.nav-placeholder {
+  color: #475569;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+
+  display: flex;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.nav-links a.active {
+  color: #1672ef;
+}
+
+.nav-links a.active::after {
+  content: '';
+  height: 3px;
+  background: #1672ef;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+}
+
+.nav-placeholder {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-search-icon {
+  font-size: 28px;
+  margin-right: 12px;
+}
+
+.login-button,
+.signup-button {
+  padding: 12px 23px;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.login-button {
+  background: white;
+  color: #18345f;
+  border: 1px solid #d5dfeb;
+}
+
+.signup-button {
+  background: #1672ef;
+  color: white;
+  border: 1px solid #1672ef;
+}
+
+.nav-actions button:disabled {
+  cursor: not-allowed;
+}
+
+/* =========================
+   HOME PAGE
+========================= */
+
+.home-page {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 26px 24px 35px;
+}
+
+.home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.05fr) minmax(300px, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.map-section {
+  min-width: 0;
+}
+
+.hero-text {
+  margin: 20px 10px 22px;
+}
+
+.hero-text h2 {
+  font-size: 35px;
+  font-weight: 800;
+  color: #0b2a60;
+  margin: 0 0 12px;
+  letter-spacing: -1px;
+}
+
+.hero-text p {
+  font-size: 14px;
+  color: #61728d;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* =========================
+   SEARCH BAR
+========================= */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 54px;
+
+  background: white;
+  border: 1px solid #d8e2f0;
+  border-radius: 8px;
+  overflow: hidden;
+
+  box-shadow: 0 2px 6px rgba(20, 55, 100, 0.03);
+}
+
+.search-icon {
+  font-size: 26px;
+  color: #8190a8;
+  padding-left: 17px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+
+  padding: 15px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.search-bar input::placeholder {
+  color: #94a3b8;
+}
+
+.search-button {
+  width: 55px;
+  height: 54px;
+  border: none;
+
+  background: #1672ef;
+  color: white;
+  font-size: 28px;
+}
+
+.search-button:hover {
+  background: #0c5ed0;
+}
+
+/* =========================
+   FILTERS
+========================= */
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 16px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 140px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 12px;
+
+  background: white;
+  border: 1px solid #dce5f0;
+  border-radius: 7px;
+}
+
+.filter-group span {
+  font-size: 17px;
+  color: #526681;
+}
+
+.filter-group select {
+  width: 100%;
+  min-width: 0;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #344563;
+  cursor: pointer;
+}
+
+.filter-group select:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.reset-button,
+.refresh-button {
+  height: 44px;
+
+  background: white;
+  border: 1px solid #dce5f0;
+  border-radius: 7px;
+
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #344563;
+}
+
+.reset-button:hover,
+.refresh-button:hover {
+  background: #e8f2ff;
+}
+
+.refresh-button {
+  color: #1672ef;
+}
+
+.refresh-button:disabled {
+  opacity: 0.55;
+}
+
+/* =========================
+   GOOGLE MAP
+========================= */
+
+.map-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e1eaf5;
+
+  box-shadow: 0 3px 12px rgba(27, 65, 118, 0.05);
+}
+
+.google-map-area {
+  position: relative;
+  height: 475px;
+  width: 100%;
+}
+
+.map-type-control {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+
+  display: flex;
+  background: white;
+  border-radius: 5px;
+  overflow: hidden;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.map-type-control button {
+  border: none;
+  background: white;
+  padding: 10px 14px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.map-type-control button.selected {
+  background: #e8f1ff;
+  color: #1672ef;
+}
+
+/* =========================
+   MAP LEGEND
+========================= */
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+
+  padding: 14px 16px;
+  background: white;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #42526a;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* =========================
+   LATEST NEWS PANEL
+========================= */
+
+.latest-news-panel {
+  background: rgba(255, 255, 255, 0.9);
+
+  border-radius: 12px;
+  border: 1px solid #e1eaf5;
+
+  padding: 18px 14px;
+  box-shadow: 0 4px 15px rgba(23, 61, 110, 0.04);
+
+  min-width: 0;
+}
+
+.latest-news-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 0 5px;
+}
+
+.latest-news-header h3 {
+  font-size: 19px;
+  color: #102c5a;
+  margin: 0;
+  font-weight: 800;
+}
+
+.latest-news-header button {
+  border: none;
+  background: none;
+  color: #1672ef;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.latest-news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* =========================
+   NEWS CARDS
+========================= */
+
+.news-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  min-height: 112px;
+  padding: 10px;
+
+  background: white;
+  border: 1px solid #e4ebf4;
+  border-radius: 10px;
+
+  text-align: left;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.news-card:hover {
+  border-color: #1672ef;
+  box-shadow: 0 4px 12px rgba(22, 114, 239, 0.09);
+}
+
+.news-thumbnail {
+  width: 105px;
+  min-width: 105px;
+  height: 90px;
+
+  background: linear-gradient(
+    140deg,
+    #77b9f8,
+    #1764ba
+  );
+
+  border-radius: 7px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-size: cover;
+  background-position: center;
+}
+
+.news-thumbnail span {
+  font-size: 36px;
+}
+
+.news-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.news-card-content h4 {
+  color: #132c51;
+  font-size: 12px;
+  font-weight: 800;
+
+  margin: 0 0 7px;
+  line-height: 1.45;
+}
+
+.category-badge {
+  display: inline-block;
+
+  background: #e7f0ff;
+  color: #1672ef;
+
+  padding: 5px 9px;
+  border-radius: 15px;
+
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.news-card-content p {
+  margin: 3px 0;
+  color: #64748b;
+  font-size: 10px;
+}
+
+.news-arrow {
+  color: #8494ad;
+  font-size: 23px;
+  font-weight: 400;
+}
+
+.news-count {
+  color: #94a3b8;
+  font-size: 11px;
+  margin-top: 18px;
+  text-align: center;
+}
+
+.no-news {
+  text-align: center;
+  padding: 35px 15px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* =========================
+   NEWS POPUP
+========================= */
+
+.news-popup {
+  max-width: 300px;
+  padding: 8px;
+  color: #334155;
+}
+
+.news-popup h3 {
+  font-size: 16px;
+  color: #102c5a;
+  margin: 0 0 10px;
+}
+
+.news-popup p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.popup-category {
+  display: inline-block;
+  padding: 5px 10px;
+  background: #e8f1ff;
+  color: #1672ef;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.news-popup a {
+  color: #1672ef;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* =========================
+   STATUS MESSAGES
+========================= */
+
+.status-text {
+  color: #1672ef;
+  font-size: 13px;
+  padding: 8px;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 13px;
+  padding: 8px;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 1050px) {
+
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .latest-news-panel {
+    width: 100%;
+  }
+
+  .nav-links {
+    gap: 15px;
+  }
+
+  .navbar {
+    padding: 15px 20px;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .navbar {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .nav-links {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    height: 45px;
+  }
+
+  .nav-actions {
+    gap: 6px;
+  }
+
+  .login-button,
+  .signup-button {
+    padding: 9px 12px;
+  }
+
+  .home-page {
+    padding: 18px 12px;
+  }
+
+  .hero-text h2 {
+    font-size: 27px;
+  }
+
+  .filters {
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    min-width: 45%;
+  }
+
+  .google-map-area {
+    height: 400px;
+  }
+
+  .map-legend {
+    gap: 10px;
+  }
+}
+
+/* NEWSCAPE LOGO */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 75px;
+  height: 65px;
+  object-fit: contain;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #092d65;
+}

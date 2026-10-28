@@ -125,6 +125,9 @@ Do not guess.
 
 If evidence is insufficient, choose NOT_GEOTAGGABLE.
 
+If a country other than the UAE is mentioned in the article title or text, and evidence is
+insufficient, do not keep it under not_geotaggable.
+
 
 STEP 3 — LOCATION DETAIL
 
@@ -147,6 +150,10 @@ location = "Dubai World Trade Centre, Dubai"
 Do NOT return only "Dubai".
 
 USE CONTEXT CLUES BEFORE ASSIGNING JUST AN EMIRATE.
+AGAIN, USE CONTEXT CLUES BEFORE ASSIGNING JUST AN EMIRATE.
+TRY TO AVOID JUST PUTTING THE EMIRATE, WE NEED SPECIFIC LOCATIONS.
+BUT DO NOT HALLUCINATE ANY LOCATIONS. 
+UAE LOCATIONS.
 
 
 STEP 4 — COUNTRY

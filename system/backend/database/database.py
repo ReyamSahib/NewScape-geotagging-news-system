@@ -339,6 +339,57 @@ def print_stored_articles():
         connection.close()
 
 
+# MAP ARTICLE RETRIEVAL
+# INTEGRATION NOTE:
+# This function comes from Hind's map backend.
+# It reads existing articles from NewsStoreSenior for the React map.
+# It does not insert, update, or delete database records.
+
+def get_map_articles():
+    """
+    Retrieve articles already saved in MySQL.
+
+    Only articles with approximate UAE coordinates are returned.
+
+    This function DOES NOT fetch new news from the News API.
+    """
+
+    connection = get_database_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            """
+            SELECT
+                n.news_ID AS id,
+                n.title,
+                c.category_Name AS category,
+                n.location_Text AS location,
+                n.latitude,
+                n.longitude,
+                n.article_URL AS url,
+                n.content_Text AS content
+
+            FROM NewsItem n
+
+            JOIN Category c
+                ON n.category_ID = c.category_ID
+
+            WHERE n.latitude BETWEEN 22 AND 27
+              AND n.longitude BETWEEN 51 AND 57
+
+            ORDER BY n.news_ID DESC;
+            """
+        )
+
+        articles = cursor.fetchall()
+
+        return articles
+
+    finally:
+        cursor.close()
+        connection.close()
+
 # Run the connection test only when this file is executed directly.
 if __name__ == "__main__":
     test_database_connection()
