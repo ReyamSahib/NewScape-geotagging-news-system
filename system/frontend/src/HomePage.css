@@ -1,0 +1,309 @@
+
+.ns-home {
+  --accent: #51d9ff;
+  min-height: 100vh;
+  color: #f4f8ff;
+  background:
+    linear-gradient(90deg, #050e20f5 12%, #071529c4 100%),
+  url('/city-night.jpg') center / cover fixed,
+    #071326;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.ns-home * { box-sizing: border-box; }
+
+.ns-city-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 75% 55%, #168de72b, transparent 55%),
+    linear-gradient(0deg, #05101c 0%, transparent 60%);
+  animation: cityGlow 9s ease-in-out infinite alternate;
+}
+
+.ns-light-trails {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ns-light-trails span {
+  position: absolute;
+  left: -45%;
+  width: 40%;
+  height: 2px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg, transparent, #55d9ff55, #9beaff, transparent
+  );
+  box-shadow: 0 0 18px #33caff99;
+  transform: rotate(-12deg);
+  animation: driveAcross 9s linear infinite;
+}
+
+.ns-light-trails span:nth-child(1) { top: 74%; }
+.ns-light-trails span:nth-child(2) {
+  top: 79%;
+  animation-delay: -3s;
+  background: linear-gradient(90deg, transparent, #ffbe73, transparent);
+}
+.ns-light-trails span:nth-child(3) {
+  top: 87%;
+  animation-delay: -6s;
+}
+.ns-light-trails span:nth-child(4) {
+  top: 92%;
+  animation-delay: -1.5s;
+}
+
+@keyframes driveAcross {
+  from { left: -45%; opacity: 0; }
+  12% { opacity: 0.8; }
+  88% { opacity: 0.8; }
+  to { left: 115%; opacity: 0; }
+}
+
+@keyframes cityGlow {
+  to { opacity: 0.55; }
+}
+
+.ns-header {
+  position: relative;
+  z-index: 2;
+  max-width: 1400px;
+  margin: auto;
+  padding: 28px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.ns-header button {
+  font: inherit;
+  color: white;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.ns-logo {
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  letter-spacing: -1px;
+}
+
+.ns-logo-dot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 18px var(--accent);
+}
+
+.ns-header nav {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+
+.ns-header nav button { font-size: 14px; }
+
+.ns-nav-login {
+  border: 1px solid #ffffff60 !important;
+  border-radius: 30px;
+  padding: 10px 22px;
+}
+
+.ns-hero {
+  max-width: 1400px;
+  margin: auto;
+  padding: 125px 6% 70px;
+}
+
+.ns-eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: 700;
+}
+
+.ns-hero h1 {
+  font-size: clamp(45px, 6.5vw, 94px);
+  line-height: 1.1;
+  letter-spacing: -3px;
+  max-width: 1000px;
+  margin: 26px 0;
+}
+
+.ns-hero h1 span {
+  background: linear-gradient(90deg, #62ddff, #b3c7ff);
+  color: transparent;
+  background-clip: text;
+}
+
+.ns-hero > p {
+  font-size: 18px;
+  line-height: 1.85;
+  color: #c5d3e5;
+  max-width: 640px;
+}
+
+.ns-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 38px;
+}
+
+.ns-actions button {
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 17px 28px;
+  transition: transform .2s, background .2s;
+}
+
+.ns-actions button:hover { transform: translateY(-3px); }
+
+.ns-primary {
+  color: #051323;
+  border: 0;
+  background: #61d9fb;
+}
+
+.ns-secondary {
+  background: #ffffff0b;
+  border: 1px solid #ffffff50;
+  color: white;
+  backdrop-filter: blur(12px);
+}
+
+.ns-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 110px;
+}
+
+.ns-feature-grid article {
+  padding: 28px;
+  border-radius: 18px;
+  border: 1px solid #ffffff26;
+  background: #0a203a9c;
+  backdrop-filter: blur(18px);
+}
+
+.ns-feature-grid article span {
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+.ns-feature-grid h3 { margin: 18px 0 10px; }
+.ns-feature-grid p { color: #b5c5d8; line-height: 1.6; }
+
+.ns-about {
+  display: flex;
+  justify-content: space-between;
+  gap: 55px;
+  padding: 85px 6%;
+  border-top: 1px solid #ffffff20;
+  background: #061427c9;
+}
+
+.ns-about > * { flex: 1; }
+.ns-about h2 { font-size: clamp(26px, 3vw, 42px); }
+.ns-about p { color: #c2d0df; line-height: 1.9; }
+
+.ns-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 6%;
+  color: #92a7bc;
+  font-size: 13px;
+  background: #04101e;
+}
+
+@media (max-width: 700px) {
+  .ns-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ns-header nav { flex-wrap: wrap; gap: 14px; }
+  .ns-hero { padding-top: 75px; }
+  .ns-hero h1 { letter-spacing: -1px; }
+  .ns-feature-grid { grid-template-columns: 1fr; margin-top: 65px; }
+  .ns-about { flex-direction: column; gap: 5px; }
+  .ns-footer { flex-direction: column; gap: 8px; }
+  .ns-home { background-attachment: scroll; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ns-light-trails span, .ns-city-glow {
+    animation: none;
+  }
+}
+/* HOMEPAGE COLOR CORRECTIONS */
+
+.ns-home {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 18, 39, 0.78) 0%,
+      rgba(8, 32, 60, 0.38) 65%,
+      rgba(7, 26, 50, 0.28) 100%
+    ),
+    url('/city-night.jpg') center / cover fixed,
+    #071326;
+}
+
+.ns-home .ns-hero h1,
+.ns-home .ns-about h2 {
+  color: #ffffff;
+}
+
+.ns-home .ns-hero h1 span {
+  background: linear-gradient(90deg, #62ddff, #bbceff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ns-home .ns-feature-grid h3 {
+  color: #ffffff;
+}
+
+.ns-home .ns-feature-grid article {
+  background: rgba(14, 37, 65, 0.65);
+  backdrop-filter: blur(14px);
+}
+
+.ns-home .ns-about {
+  background: rgba(7, 21, 41, 0.88);
+}
+
+.ns-home .ns-hero p,
+.ns-home .ns-about p {
+  color: #e1eaf4;
+}
+.ns-home .ns-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ns-home-logo {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}

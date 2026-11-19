@@ -18,10 +18,14 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from news_service import retrieve_initial_news
+from news_service import retrieve_all_news
 from ai_service import detect_event_location_groq, classify_article_groq, category_mapping
-from database.database import insert_news_article, print_stored_articles
-
+from database.database import (
+    article_exists,
+    article_title_exists,
+    insert_news_article,
+    print_stored_articles
+)
 
 
 # ARTICLE PROCESSING
@@ -40,14 +44,33 @@ def process_articles(articles, max_articles=None):
 
     processed_articles = []
 
-    # Limit the number of articles during testing if requested.
-    if max_articles is not None:
-        articles = articles[:max_articles]
-
     for article in articles:
 
+        # Stop once enough NEW articles have been processed.
+        # Already-stored articles are skipped below and do not count,
+        # so a run never ends up with nothing new just because the
+        # first articles were old ones.
+        if max_articles is not None and len(processed_articles) >= max_articles:
+            break
+
         title = article.get("title", "")
-        article_text = article.get("description") or article.get("content") or ""
+        article_url = article.get("url")
+        
+        if article_exists(article_url):
+            print("Skipped already stored article:", title)
+            continue
+
+        # The same story can come from a different source with a
+        # different URL, so the headline is also checked.
+        if article_title_exists(title):
+            print("Skipped article with an already stored headline:", title)
+            continue
+        # Combine the available article text to provide more context
+        # for AI location inference and category classification.
+        description = article.get("description") or ""
+        content = article.get("content") or ""
+
+        article_text = f"{description}\n{content}".strip()
 
         print("Processing:", title)
 
@@ -205,10 +228,10 @@ if __name__ == "__main__":
 
     print("\nStarting NewScape article processing test...")
 
-    # Retrieve real UAE-related articles from NewsAPI.
-    articles = retrieve_initial_news()
+    # Retrieve real UAE-related articles from all news sources.
+    articles = retrieve_all_news()
 
-    print("\nArticles available from NewsAPI:", len(articles))
+    print("\nArticles available from all sources:", len(articles))
 
     # Process only two articles during this test to avoid
     # unnecessary API usage and rate-limit issues.

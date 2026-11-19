@@ -34,3 +34,9 @@ data/backups/
 # Temporary/log files
 *.log
 *.tmp
+# Frontend dependencies and build files
+node_modules/
+dist/
+
+# Local Streamlit configuration
+.streamlit/

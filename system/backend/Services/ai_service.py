@@ -2,16 +2,19 @@
 AI processing service for the NewScape Senior Project.
 
 This module handles:
-1. AI-based event location inference
-2. UAE geocoding using Geoapify
-3. AI-based news category classification
+1. Content check (articles that must not be stored)
+2. AI-based event location inference
+3. UAE geocoding using Geoapify
+4. AI-based news category classification
 
 The AI components use separate Groq API keys and the
 openai/gpt-oss-120b model.
 """
 
 import json
+import math
 import os
+import re
 from pathlib import Path
 
 import requests
@@ -42,8 +45,27 @@ groq_category_client = Groq(api_key=category_api_key)
 
 # GEOAPIFY GEOCODING
 
-def geocode_location(location, emirate, country):
-    search_text = f"{location}, {emirate}, {country}"
+# Match types that point to a specific place rather than a whole city.
+SPECIFIC_RESULT_TYPES = ["amenity", "building", "street", "suburb", "district", "postcode"]
+
+# Words ignored when checking that Geoapify found the right place.
+GENERIC_WORDS = {
+    "abu", "dhabi", "dubai", "sharjah", "ajman", "fujairah", "the", "and",
+    "city", "region", "emirate", "centre", "center", "international", "uae"
+}
+
+# Towns such as Liwa, Ruwais or Hatta are returned by Geoapify as a
+# "city" or "county". These are accepted when the place is a town,
+# but not when the place is only the emirate itself.
+TOWN_RESULT_TYPES = ["city", "county"]
+
+EMIRATE_NAMES = {
+    "abu dhabi", "dubai", "sharjah", "ajman", "umm al quwain",
+    "ras al khaimah", "fujairah", "uae", "united arab emirates"
+}
+
+
+def geocode_location(search_text, near_latitude=None, near_longitude=None):
 
     url = "https://api.geoapify.com/v1/geocode/search"
 
@@ -53,6 +75,11 @@ def geocode_location(location, emirate, country):
         "limit": 1,
         "filter": "countrycode:ae"
     }
+
+    # Prefer results close to the AI's estimate, so places with the same
+    # name in another emirate are not chosen.
+    if near_latitude is not None and near_longitude is not None:
+        params["bias"] = f"proximity:{near_longitude},{near_latitude}"
 
     response = requests.get(url, params=params)
     response.raise_for_status()
@@ -67,8 +94,221 @@ def geocode_location(location, emirate, country):
     return {
         "latitude": result["lat"],
         "longitude": result["lon"],
+        "formatted_address": result.get("formatted"),
+        "result_type": result.get("result_type"),
+        "state": result.get("state")
+    }
+
+
+
+# REVERSE GEOCODING
+
+# Checks which emirate a pair of coordinates belongs to.
+
+def reverse_geocode(latitude, longitude):
+
+    url = "https://api.geoapify.com/v1/geocode/reverse"
+
+    params = {
+        "lat": latitude,
+        "lon": longitude,
+        "apiKey": geoapify_api_key
+    }
+
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    data = response.json()
+
+    if not data["features"]:
+        return None
+
+    result = data["features"][0]["properties"]
+
+    return {
+        "country_code": result.get("country_code"),
+        "state": result.get("state"),
         "formatted_address": result.get("formatted")
     }
+
+
+
+# DISTANCE IN KM BETWEEN TWO COORDINATES
+
+def distance_km(lat1, lon1, lat2, lon2):
+
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+
+    a = (
+        math.sin((lat2 - lat1) / 2) ** 2
+        + math.cos(lat1) * math.cos(lat2) * math.sin((lon2 - lon1) / 2) ** 2
+    )
+
+    return 6371 * 2 * math.asin(math.sqrt(a))
+
+
+
+# EMIRATE CHECK
+
+# Compares the AI's emirate with Geoapify's "state" field.
+# Spaces, hyphens and capitals are ignored, so "Ras Al Khaimah"
+# matches "Ras al-Khaimah Emirate".
+
+def same_emirate_name(emirate, state):
+
+    emirate_letters = re.sub(r"[^a-z]", "", (emirate or "").lower())
+    state_letters = re.sub(r"[^a-z]", "", (state or "").lower())
+
+    if not emirate_letters:
+        return False
+
+    return emirate_letters in state_letters
+
+
+
+# NAME CHECK
+
+# Geoapify sometimes returns a different nearby place
+# (e.g. "Abu Dhabi Airports" -> "Guggenheim Abu Dhabi").
+# At least half of the place's important words must appear in the address.
+
+def name_matches(place_name, formatted_address):
+
+    place_words = {
+        word for word in re.findall(r"\w+", (place_name or "").lower())
+        if word not in GENERIC_WORDS and len(word) > 2
+    }
+
+    if not place_words:
+        return True
+
+    address = (formatted_address or "").lower()
+
+    found_words = sum(1 for word in place_words if word in address)
+
+    return found_words / len(place_words) >= 0.5
+
+
+
+# BEST AVAILABLE COORDINATES
+
+def is_town(place_name):
+
+    return (place_name or "").strip().lower() not in EMIRATE_NAMES
+
+
+def is_good_match(geocode_result, place_name, emirate):
+
+    if geocode_result is None:
+        return False
+
+    result_type = geocode_result["result_type"]
+
+    # Specific places, or a smaller town (e.g. Liwa) inside the emirate
+    specific_enough = (
+        result_type in SPECIFIC_RESULT_TYPES
+        or (result_type in TOWN_RESULT_TYPES and is_town(place_name))
+    )
+
+    return (
+        specific_enough
+        and name_matches(place_name, geocode_result["formatted_address"])
+
+        # Must be in the same emirate the AI identified
+        and same_emirate_name(emirate, geocode_result["state"])
+    )
+
+
+def find_best_coordinates(location_result):
+
+    location = location_result.get("location")
+    place_name = location_result.get("place_name") or location
+    emirate = location_result.get("emirate") or ""
+
+    ai_latitude = location_result.get("latitude")
+    ai_longitude = location_result.get("longitude")
+
+    # 1. Full location, searched near the AI's estimate
+    geocode_result = geocode_location(
+        f"{location}, United Arab Emirates",
+        ai_latitude, ai_longitude
+    )
+
+    if is_good_match(geocode_result, place_name, emirate):
+        geocode_result["coordinate_source"] = "geoapify"
+        return geocode_result
+
+    # 2. Place name with its emirate, searched near the AI's estimate
+    if place_name.lower() != emirate.lower():
+
+        place_result = geocode_location(
+            f"{place_name}, {emirate}, United Arab Emirates",
+            ai_latitude, ai_longitude
+        )
+
+        if is_good_match(place_result, place_name, emirate):
+            place_result["coordinate_source"] = "geoapify (place name)"
+            return place_result
+
+        # 2b. Place name only, without the bias, for less known or
+        #     newer areas (e.g. Liwa, Al Dhafra, Hatta, Mleiha)
+        town_result = geocode_location(
+            f"{place_name}, United Arab Emirates"
+        )
+
+        if is_good_match(town_result, place_name, emirate):
+            town_result["coordinate_source"] = "geoapify (town search)"
+            return town_result
+
+    # 3. AI coordinates, accepted only if Geoapify confirms they are
+    #    in the same emirate AND either close to the area found or
+    #    at the named place (the area found may only be the emirate
+    #    centre, which is far from towns such as Liwa)
+    if ai_latitude is not None and ai_longitude is not None:
+
+        check = reverse_geocode(ai_latitude, ai_longitude)
+
+        same_emirate = (
+            check is not None
+            and check["country_code"] == "ae"
+            and same_emirate_name(emirate, check["state"])
+        )
+
+        close_enough = geocode_result is not None and distance_km(
+            ai_latitude, ai_longitude,
+            geocode_result["latitude"], geocode_result["longitude"]
+        ) <= 30
+
+        at_named_place = (
+            check is not None
+            and is_town(place_name)
+            and name_matches(place_name, check["formatted_address"])
+        )
+
+        if same_emirate and (close_enough or at_named_place):
+            return {
+                "latitude": ai_latitude,
+                "longitude": ai_longitude,
+                "formatted_address": check["formatted_address"],
+                "result_type": "ai (verified)",
+                "coordinate_source": "groq, verified by geoapify"
+            }
+
+    # 4. City / emirate level, only if it is in the right emirate
+    if geocode_result and same_emirate_name(emirate, geocode_result["state"]):
+        geocode_result["coordinate_source"] = "geoapify (city level)"
+        return geocode_result
+
+    # 5. Emirate centre, so a UAE article still appears on the map
+    if emirate and emirate.lower() not in ("unknown", "outside uae"):
+
+        emirate_result = geocode_location(f"{emirate}, United Arab Emirates")
+
+        if emirate_result is not None:
+            emirate_result["coordinate_source"] = "geoapify (emirate level)"
+            return emirate_result
+
+    return None
 
 
 
@@ -81,6 +321,33 @@ You are the location inference component of a UAE news geotagging system.
 
 Analyze the article and identify the geographic location where the MAIN EVENT
 described in the article occurred.
+
+
+STEP 0 — CONTENT CHECK (DO THIS FIRST)
+
+Some articles must NOT be shown in NewScape. Mark the article as EXCLUDED
+if ANY of the following is true:
+
+1. The article mocks, ridicules, insults, slanders, or makes fun of the
+   UAE, its leaders, its people, its emirates, or its institutions,
+   or contains inappropriate or offensive comments about the UAE.
+   This includes satire, jokes, and hostile opinion pieces about the UAE.
+
+2. The article involves sexual activity or sexual content of any kind.
+
+3. The article involves sexual assault, rape, sexual harassment,
+   sexual exploitation, or indecent acts.
+
+4. The article describes people in vulnerable situations of a similar
+   kind, such as child abuse, abuse of minors, human trafficking,
+   or domestic abuse.
+
+Do NOT exclude neutral news reporting about the UAE (for example
+government announcements, economic news, or factual reporting),
+only content that matches the rules above.
+
+If the article is EXCLUDED, stop and return the EXCLUDED JSON shown
+in the OUTPUT section. Do not identify a location.
 
 You must return:
 1. location_type
@@ -111,6 +378,9 @@ STEP 2 — CLASSIFICATION
 
 Classify the event location as exactly one of:
 
+EXCLUDED
+The article matches a rule in STEP 0 (only use this for STEP 0).
+
 EXPLICIT
 The article directly states where the main event occurred.
 
@@ -124,6 +394,9 @@ The event location cannot be reliably determined from the article.
 Do not guess.
 
 If evidence is insufficient, choose NOT_GEOTAGGABLE.
+
+If a country other than the UAE is mentioned in the article title or text, and evidence is
+insufficient, do not keep it under not_geotaggable.
 
 
 STEP 3 — LOCATION DETAIL
@@ -145,6 +418,50 @@ return:
 location = "Dubai World Trade Centre, Dubai"
 
 Do NOT return only "Dubai".
+
+USE CONTEXT CLUES BEFORE ASSIGNING JUST AN EMIRATE.
+AGAIN, USE CONTEXT CLUES BEFORE ASSIGNING JUST AN EMIRATE.
+TRY TO AVOID JUST PUTTING THE EMIRATE, WE NEED SPECIFIC LOCATIONS.
+BUT DO NOT HALLUCINATE ANY LOCATIONS. 
+UAE LOCATIONS.
+
+LESS KNOWN AND NEWER AREAS
+
+Many articles are about towns and regions outside the main cities.
+If the article mentions one of these, return the town or area itself,
+NOT only the emirate. Examples:
+
+Abu Dhabi emirate:
+Liwa, Al Dhafra, Madinat Zayed, Ruwais, Ghayathi, Mirfa, Sila,
+Delma Island, Sir Bani Yas Island, Al Ain, Al Hili, Al Jimi,
+Al Qua'a, Al Wathba, Al Shahama, Al Samha, Yas Island,
+Saadiyat Island, Al Reem Island, Khalifa City, Mussafah, Al Mafraq
+
+Dubai emirate:
+Hatta, Al Qudra, Al Lisaili, Margham, Jebel Ali, Dubai South,
+Al Maktoum International Airport, Dubai Silicon Oasis, Al Awir
+
+Sharjah emirate:
+Khor Fakkan, Kalba, Dibba Al Hisn, Al Dhaid, Mleiha, Al Madam,
+Al Hamriyah, Muwaileh
+
+Ras Al Khaimah emirate:
+Jebel Jais, Al Jazirah Al Hamra, Al Rams, Al Marjan Island, Shaam
+
+Fujairah emirate:
+Dibba Al Fujairah, Masafi, Al Bidya, Mirbah, Qidfa
+
+Umm Al Quwain emirate:
+Falaj Al Mualla, Al Salamah
+
+Ajman emirate:
+Masfout, Manama
+
+Events held at these places (for example the Liwa Date Festival,
+Liwa Moreeb Dune, Al Dhafra Festival, Hatta dam) must use the town
+or area, e.g. "Liwa, Abu Dhabi" or "Moreeb Dune, Liwa, Abu Dhabi".
+Use the emirate alone ONLY when no town, area, venue, or event place
+is given or can be reliably inferred.
 
 
 STEP 4 — COUNTRY
@@ -247,6 +564,16 @@ Before responding, verify:
 5. Does the emirate match the identified UAE location?
 
 
+PLACE NAME AND COORDINATES
+
+place_name is only the specific venue, landmark, road or area,
+without the city or emirate.
+If there is no specific place, place_name is the city or emirate.
+
+latitude and longitude are your best estimate for place_name.
+If you do not know the coordinates, use null. Do not guess.
+
+
 OUTPUT
 
 Return ONLY valid JSON.
@@ -256,8 +583,11 @@ Use exactly this structure:
 {{
     "location_type": "EXPLICIT",
     "location": "Dubai World Trade Centre, Dubai",
+    "place_name": "Dubai World Trade Centre",
     "emirate": "Dubai",
     "country": "United Arab Emirates",
+    "latitude": 25.2285,
+    "longitude": 55.2867,
     "confidence": "high"
 }}
 
@@ -267,9 +597,26 @@ For a non-geotaggable article:
 {{
     "location_type": "NOT_GEOTAGGABLE",
     "location": "Unknown",
+    "place_name": "Unknown",
     "country": "Unknown",
     "emirate": "Unknown",
+    "latitude": null,
+    "longitude": null,
     "confidence": "low"
+}}
+
+For an article excluded in STEP 0:
+
+{{
+    "location_type": "EXCLUDED",
+    "location": "Unknown",
+    "place_name": "Unknown",
+    "country": "Unknown",
+    "emirate": "Unknown",
+    "latitude": null,
+    "longitude": null,
+    "confidence": "high",
+    "excluded_reason": "short reason, e.g. mocks the UAE / sexual content"
 }}
 
 Do not include explanations outside the JSON.
@@ -306,7 +653,7 @@ Do not guess locations when the evidence is insufficient.
         ],
         response_format={"type": "json_object"},
         temperature=0,
-        reasoning_effort="high"
+        reasoning_effort="medium"
     )
 
     result = json.loads(response.choices[0].message.content)
@@ -326,10 +673,25 @@ Do not guess locations when the evidence is insufficient.
 
 
 
+    # CASE 0: ARTICLE MUST NOT BE STORED
+    # Mocking or offensive content about the UAE, sexual content,
+    # or vulnerable situations such as sexual assault.
+    # -3, -3 means the article is skipped and not saved.
+
+
+    if result["location_type"] == "EXCLUDED":
+
+        result["location"] = "Unknown"
+        result["emirate"] = "Unknown"
+        result["country"] = "Unknown"
+        result["coordinates"] = [-3.0, -3.0]
+
+
+
     # CASE 1: LOCATION CANNOT BE IDENTIFIED
 
 
-    if result["location_type"] == "NOT_GEOTAGGABLE":
+    elif result["location_type"] == "NOT_GEOTAGGABLE":
 
         result["location"] = "Unknown"
         result["emirate"] = "Unknown"
@@ -348,18 +710,13 @@ Do not guess locations when the evidence is insufficient.
 
 
 
-    # CASE 3: UAE LOCATION → GEOAPIFY
+    # CASE 3: UAE LOCATION → BEST AVAILABLE COORDINATES
 
 
     else:
 
-        geocode_result = geocode_location(
-            result["location"],
-            result["emirate"],
-            result["country"]
-        )
+        geocode_result = find_best_coordinates(result)
 
-        # Geoapify successfully found the location
         if geocode_result is not None:
 
             result["coordinates"] = [
@@ -367,11 +724,15 @@ Do not guess locations when the evidence is insufficient.
                 geocode_result["longitude"]
             ]
 
-        # UAE location identified, but Geoapify
-        # could not determine the coordinates
+            result["coordinate_source"] = geocode_result["coordinate_source"]
+            result["geoapify_address"] = geocode_result["formatted_address"]
+            result["match_type"] = geocode_result["result_type"]
+
+        # UAE location identified, but no coordinates were found.
+        # Stored without a map pin (-3, -3 is now only for excluded articles).
         else:
 
-            result["coordinates"] = [-3.0, -3.0]
+            result["coordinates"] = [-1.0, -1.0]
 
 
 
@@ -399,6 +760,7 @@ following categories:
 - Education
 - Weather
 - Traffic & Transport
+- Health
 - Other
 
 
@@ -437,6 +799,13 @@ temperature, or other weather-related events.
 TRAFFIC & TRANSPORT:
 Articles mainly about road traffic, transport systems, public transportation,
 road closures, accidents affecting traffic, or mobility-related developments.
+
+HEALTH:
+Articles mainly about hospitals, healthcare services, medical treatments,
+diseases, public health, medical research, health programmes,
+or developments in the healthcare sector.
+Healthcare companies, hospital deals and medical research are Health,
+not Business or Technology, when the main subject is health.
 
 OTHER:
 Articles whose main subject does not reasonably fit any of the
@@ -548,7 +917,8 @@ category_mapping = {
     "Education": 6,
     "Weather": 7,
     "Traffic & Transport": 8,
-    "Other": 9
+    "Other": 9,
+    "Health": 10
 }
 
 

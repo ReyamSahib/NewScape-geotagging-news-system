@@ -1,0 +1,52 @@
+# AUTOMATIC NEWS UPDATES
+# Runs the NewScape news processing on GitHub's computers
+# three times a day (8 AM, 2 PM and 8 PM UAE time),
+# even when our laptops are off. It can also be started
+# by hand from the Actions tab ("Run workflow").
+
+name: NewScape news update
+
+on:
+  schedule:
+    # GitHub uses UTC time. UAE time = UTC + 4.
+    - cron: "17 4 * * *"    # 8:17 AM UAE
+    - cron: "17 10 * * *"   # 2:17 PM UAE
+    - cron: "17 16 * * *"   # 8:17 PM UAE
+  workflow_dispatch:
+
+# Never run two updates at the same time.
+concurrency:
+  group: news-update
+  cancel-in-progress: false
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Get the project code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install packages
+        run: pip install requests python-dotenv groq mysql-connector-python certifi
+
+      - name: Retrieve, process and store new articles
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          LocationInferenceAPI: ${{ secrets.LOCATION_INFERENCE_API }}
+          CategoryClassificationAPI: ${{ secrets.CATEGORY_CLASSIFICATION_API }}
+          GeocodingAPI2: ${{ secrets.GEOCODING_API2 }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
+          WORLD_NEWS_API_KEY: ${{ secrets.WORLD_NEWS_API_KEY }}
+        run: python -m system.backend.Services.article_processing_service

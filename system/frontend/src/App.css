@@ -1,0 +1,2628 @@
+/* =========================
+   NEWSCAPE MAIN DESIGN
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f1f6fc;
+  color: #142c55;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  background: linear-gradient(
+    120deg,
+    #dfedfc 0%,
+    #eaf4ff 43%,
+    #f8fbff 100%
+  );
+}
+
+/* =========================
+   NAVIGATION BAR
+========================= */
+
+.navbar {
+  height: 84px;
+  padding: 0 35px;
+  background: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #e4ebf4;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  color: #1672ef;
+  font-size: 49px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.brand-text h1 {
+  color: #092d65;
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.8px;
+}
+
+.brand-text span {
+  color: #64748b;
+  font-size: 11px;
+  display: block;
+  margin-top: 2px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  height: 100%;
+}
+
+.nav-links a,
+.nav-placeholder {
+  color: #475569;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+
+  display: flex;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.nav-links a.active {
+  color: #1672ef;
+}
+
+.nav-links a.active::after {
+  content: '';
+  height: 3px;
+  background: #1672ef;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+}
+
+.nav-placeholder {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-search-icon {
+  font-size: 28px;
+  margin-right: 12px;
+}
+
+.login-button,
+.signup-button {
+  padding: 12px 23px;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.login-button {
+  background: white;
+  color: #18345f;
+  border: 1px solid #d5dfeb;
+}
+
+.signup-button {
+  background: #1672ef;
+  color: white;
+  border: 1px solid #1672ef;
+}
+
+.nav-actions button:disabled {
+  cursor: not-allowed;
+}
+
+/* =========================
+   HOME PAGE
+========================= */
+
+.home-page {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 26px 24px 35px;
+}
+
+.home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.05fr) minmax(300px, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.map-section {
+  min-width: 0;
+}
+
+.hero-text {
+  margin: 20px 10px 22px;
+}
+
+.hero-text h2 {
+  font-size: 35px;
+  font-weight: 800;
+  color: #0b2a60;
+  margin: 0 0 12px;
+  letter-spacing: -1px;
+}
+
+.hero-text p {
+  font-size: 14px;
+  color: #61728d;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* =========================
+   SEARCH BAR
+========================= */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 54px;
+
+  background: white;
+  border: 1px solid #d8e2f0;
+  border-radius: 8px;
+  overflow: hidden;
+
+  box-shadow: 0 2px 6px rgba(20, 55, 100, 0.03);
+}
+
+.search-icon {
+  font-size: 26px;
+  color: #8190a8;
+  padding-left: 17px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+
+  padding: 15px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.search-bar input::placeholder {
+  color: #94a3b8;
+}
+
+.search-button {
+  width: 55px;
+  height: 54px;
+  border: none;
+
+  background: #1672ef;
+  color: white;
+  font-size: 28px;
+}
+
+.search-button:hover {
+  background: #0c5ed0;
+}
+
+/* =========================
+   FILTERS
+========================= */
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 16px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 140px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 12px;
+
+  background: white;
+  border: 1px solid #dce5f0;
+  border-radius: 7px;
+}
+
+.filter-group span {
+  font-size: 17px;
+  color: #526681;
+}
+
+.filter-group select {
+  width: 100%;
+  min-width: 0;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #344563;
+  cursor: pointer;
+}
+
+.filter-group select:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.reset-button,
+.refresh-button {
+  height: 44px;
+
+  background: white;
+  border: 1px solid #dce5f0;
+  border-radius: 7px;
+
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #344563;
+}
+
+.reset-button:hover,
+.refresh-button:hover {
+  background: #e8f2ff;
+}
+
+.refresh-button {
+  color: #1672ef;
+}
+
+.refresh-button:disabled {
+  opacity: 0.55;
+}
+
+/* =========================
+   GOOGLE MAP
+========================= */
+
+.map-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e1eaf5;
+
+  box-shadow: 0 3px 12px rgba(27, 65, 118, 0.05);
+}
+
+.google-map-area {
+  position: relative;
+  height: 475px;
+  width: 100%;
+}
+
+.map-type-control {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+
+  display: flex;
+  background: white;
+  border-radius: 5px;
+  overflow: hidden;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.map-type-control button {
+  border: none;
+  background: white;
+  padding: 10px 14px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.map-type-control button.selected {
+  background: #e8f1ff;
+  color: #1672ef;
+}
+
+/* =========================
+   MAP LEGEND
+========================= */
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+
+  padding: 14px 16px;
+  background: white;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #42526a;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* =========================
+   LATEST NEWS PANEL
+========================= */
+
+.latest-news-panel {
+  background: rgba(255, 255, 255, 0.9);
+
+  border-radius: 12px;
+  border: 1px solid #e1eaf5;
+
+  padding: 18px 14px;
+  box-shadow: 0 4px 15px rgba(23, 61, 110, 0.04);
+
+  min-width: 0;
+}
+
+.latest-news-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 0 5px;
+}
+
+.latest-news-header h3 {
+  font-size: 19px;
+  color: #102c5a;
+  margin: 0;
+  font-weight: 800;
+}
+
+.latest-news-header button {
+  border: none;
+  background: none;
+  color: #1672ef;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.latest-news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* =========================
+   NEWS CARDS
+========================= */
+
+.news-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  min-height: 112px;
+  padding: 10px;
+
+  background: white;
+  border: 1px solid #e4ebf4;
+  border-radius: 10px;
+
+  text-align: left;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.news-card:hover {
+  border-color: #1672ef;
+  box-shadow: 0 4px 12px rgba(22, 114, 239, 0.09);
+}
+
+.news-thumbnail {
+  width: 105px;
+  min-width: 105px;
+  height: 90px;
+
+  background: linear-gradient(
+    140deg,
+    #77b9f8,
+    #1764ba
+  );
+
+  border-radius: 7px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-size: cover;
+  background-position: center;
+}
+
+.news-thumbnail span {
+  font-size: 36px;
+}
+
+.news-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.news-card-content h4 {
+  color: #132c51;
+  font-size: 12px;
+  font-weight: 800;
+
+  margin: 0 0 7px;
+  line-height: 1.45;
+}
+
+.category-badge {
+  display: inline-block;
+
+  background: #e7f0ff;
+  color: #1672ef;
+
+  padding: 5px 9px;
+  border-radius: 15px;
+
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.news-card-content p {
+  margin: 3px 0;
+  color: #64748b;
+  font-size: 10px;
+}
+
+.news-arrow {
+  color: #8494ad;
+  font-size: 23px;
+  font-weight: 400;
+}
+
+.news-count {
+  color: #94a3b8;
+  font-size: 11px;
+  margin-top: 18px;
+  text-align: center;
+}
+
+.no-news {
+  text-align: center;
+  padding: 35px 15px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* =========================
+   NEWS POPUP
+========================= */
+
+.news-popup {
+  max-width: 300px;
+  padding: 8px;
+  color: #334155;
+}
+
+.news-popup h3 {
+  font-size: 16px;
+  color: #102c5a;
+  margin: 0 0 10px;
+}
+
+.news-popup p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.popup-category {
+  display: inline-block;
+  padding: 5px 10px;
+  background: #e8f1ff;
+  color: #1672ef;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.news-popup a {
+  color: #1672ef;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* =========================
+   STATUS MESSAGES
+========================= */
+
+.status-text {
+  color: #1672ef;
+  font-size: 13px;
+  padding: 8px;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 13px;
+  padding: 8px;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 1050px) {
+
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .latest-news-panel {
+    width: 100%;
+  }
+
+  .nav-links {
+    gap: 15px;
+  }
+
+  .navbar {
+    padding: 15px 20px;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .navbar {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .nav-links {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    height: 45px;
+  }
+
+  .nav-actions {
+    gap: 6px;
+  }
+
+  .login-button,
+  .signup-button {
+    padding: 9px 12px;
+  }
+
+  .home-page {
+    padding: 18px 12px;
+  }
+
+  .hero-text h2 {
+    font-size: 27px;
+  }
+
+  .filters {
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    min-width: 45%;
+  }
+
+  .google-map-area {
+    height: 400px;
+  }
+
+  .map-legend {
+    gap: 10px;
+  }
+}
+
+/* NEWSCAPE LOGO */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 75px;
+  height: 65px;
+  object-fit: contain;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #092d65;
+}
+
+
+/* =====================================
+   NEWSCAPE ANALYTICS DASHBOARD
+   ===================================== */
+
+.analytics-dashboard {
+  padding: 40px 5%;
+  background: #f5f8fd;
+  scroll-margin-top: 90px;
+}
+
+.analytics-heading {
+  margin-bottom: 28px;
+}
+
+.analytics-heading h2 {
+  color: #102c5a;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.analytics-heading p {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+
+.analytics-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.analytics-stat-card {
+  background: #ffffff;
+  border: 1px solid #e3eaf4;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(16, 44, 90, 0.05);
+}
+
+.analytics-stat-card span {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.analytics-stat-card h3 {
+  color: #1672ef;
+  font-size: 34px;
+  font-weight: 750;
+  margin: 14px 0 8px;
+}
+
+.analytics-stat-card p {
+  color: #94a3b8;
+  font-size: 12px;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .analytics-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .analytics-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-dashboard {
+    padding: 28px 18px;
+  }
+}
+
+
+/* =========================================
+   NEWSCAPE FULL-SCREEN MAP LAYOUT
+   ========================================= */
+
+.newscape-map-page {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 80px);
+  min-height: 580px;
+  padding: 0 !important;
+  margin: 0;
+  overflow: hidden;
+  background: #e8f1fa;
+}
+
+.newscape-map-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.newscape-map-toolbar {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: min(850px, calc(100% - 40px));
+  padding: 14px;
+  border: 1px solid #dce7f5;
+  border-radius: 16px;
+  background: rgba(245, 249, 255, 0.97);
+  box-shadow: 0 8px 28px rgba(16, 44, 90, 0.12);
+}
+
+.newscape-map-toolbar .search-bar {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 12px;
+}
+
+.newscape-map-toolbar .filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.newscape-map-toolbar .filter-group {
+  flex: 1 1 130px;
+  min-width: 0;
+}
+
+.newscape-map-toolbar .filter-group select {
+  max-width: 100%;
+}
+
+.newscape-floating-news {
+  position: absolute !important;
+  top: 170px;
+  left: 20px;
+  right: auto !important;
+  bottom: 75px;
+  z-index: 9;
+  width: min(380px, calc(100% - 40px));
+  max-height: none;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #dce7f5;
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(16, 44, 90, 0.16);
+}
+
+.newscape-floating-news .latest-news-list {
+  overflow: visible;
+}
+
+.newscape-floating-map-type {
+  position: absolute !important;
+  top: 170px;
+  right: 20px;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 9;
+  display: flex;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(16, 44, 90, 0.15);
+}
+
+.newscape-floating-legend {
+  position: absolute !important;
+  bottom: 15px;
+  left: 20px;
+  right: 20px;
+  z-index: 9;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  width: auto;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #dce7f5;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(16, 44, 90, 0.12);
+}
+
+.newscape-analytics-page {
+  min-height: calc(100vh - 80px);
+  background: #f5f8fd;
+}
+
+.newscape-analytics-page .analytics-dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Navigation buttons styled like existing links */
+
+.nav-links button {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 10px;
+}
+
+.nav-links button:hover,
+.nav-links button.active {
+  color: #1672ef;
+}
+
+/* Responsive layout */
+
+@media (max-width: 900px) {
+  .newscape-map-toolbar {
+    top: 12px;
+    width: calc(100% - 24px);
+    padding: 10px;
+  }
+
+  .newscape-floating-news {
+    top: 190px;
+    left: 12px;
+    bottom: 85px;
+    width: min(310px, calc(100% - 24px));
+  }
+
+  .newscape-floating-map-type {
+    top: 190px;
+    right: 12px;
+  }
+
+  .newscape-floating-legend {
+    left: 12px;
+    right: 12px;
+    bottom: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .newscape-map-page {
+    height: calc(100dvh - 70px);
+    min-height: 600px;
+  }
+
+  .newscape-map-toolbar {
+    max-height: 190px;
+    overflow-y: auto;
+  }
+
+  .newscape-floating-news {
+    top: auto;
+    bottom: 95px;
+    left: 10px;
+    width: min(300px, calc(100% - 20px));
+    height: 240px;
+  }
+
+  .newscape-floating-map-type {
+    top: 210px;
+    right: 10px;
+  }
+
+  .newscape-floating-legend {
+    max-height: 65px;
+    overflow-y: auto;
+    padding: 8px;
+  }
+}
+
+
+/* ==========================================
+   NEWSCAPE — FULL WIDTH MAP LAYOUT FIX
+   ========================================== */
+
+/* Remove old page width restrictions */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+#root,
+.app {
+  max-width: none !important;
+  width: 100% !important;
+  padding: 0 !important;
+}
+
+/* Full browser width, below navbar */
+.newscape-map-page {
+  position: relative;
+  width: 100% !important;
+  max-width: none !important;
+  height: calc(100dvh - 82px);
+  min-height: 550px;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.newscape-map-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Compact search and filters */
+.newscape-map-toolbar {
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(760px, calc(100% - 440px));
+  min-width: 420px;
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+.newscape-map-toolbar .search-bar {
+  margin-bottom: 8px;
+}
+
+.newscape-map-toolbar .search-bar input {
+  height: 42px;
+}
+
+.newscape-map-toolbar .filters {
+  gap: 6px;
+}
+
+.newscape-map-toolbar .filter-group select {
+  font-size: 12px;
+}
+
+/* Latest News: compact floating sidebar */
+.newscape-floating-news {
+  top: 16px;
+  left: 16px;
+  bottom: 72px;
+  width: 345px;
+  max-height: none;
+  padding: 14px;
+  overflow-y: auto;
+  border-radius: 14px;
+}
+
+.newscape-floating-news .latest-news-header h3 {
+  font-size: 20px;
+}
+
+.newscape-floating-news .news-card {
+  padding: 10px;
+  gap: 10px;
+}
+
+.newscape-floating-news .news-thumbnail {
+  width: 75px;
+  min-width: 75px;
+  height: 75px;
+}
+
+.newscape-floating-news .news-card-content h4 {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Keep map controls accessible */
+.newscape-floating-map-type {
+  top: 16px;
+  right: 16px;
+}
+
+/* Small bottom legend */
+.newscape-floating-legend {
+  bottom: 10px;
+  left: 16px;
+  right: 16px;
+  padding: 8px 12px;
+  gap: 6px 14px;
+  max-height: 55px;
+  overflow-y: auto;
+}
+
+.newscape-floating-legend .legend-item {
+  font-size: 11px;
+}
+
+/* Smaller screens: stack toolbar above news */
+@media (max-width: 1000px) {
+  .newscape-map-toolbar {
+    top: 12px;
+    left: auto;
+    right: 12px;
+    transform: none;
+    width: calc(100% - 390px);
+    min-width: 0;
+  }
+
+  .newscape-floating-news {
+    top: 12px;
+    left: 12px;
+    width: 340px;
+  }
+}
+
+@media (max-width: 700px) {
+  .newscape-map-toolbar {
+    left: 10px;
+    right: 10px;
+    width: auto;
+  }
+
+  .newscape-floating-news {
+    top: auto;
+    bottom: 75px;
+    left: 10px;
+    width: min(320px, calc(100% - 20px));
+    height: 230px;
+  }
+
+  .newscape-floating-map-type {
+    top: 190px;
+    right: 10px;
+  }
+}
+
+
+/* ==========================================
+   NEWSCAPE — POLISHED MAP EXPERIENCE
+   ========================================== */
+
+/* Full-screen map */
+.newscape-map-page {
+  position: relative;
+  width: 100% !important;
+  max-width: none !important;
+  height: calc(100dvh - 86px);
+  min-height: 580px;
+  overflow: hidden;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #eaf3fb;
+}
+
+.newscape-map-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Compact floating toolbar — left of news panel */
+.newscape-map-toolbar {
+  position: absolute !important;
+  top: 20px !important;
+  left: 24px !important;
+  right: auto !important;
+  transform: none !important;
+  width: min(620px, calc(100% - 455px)) !important;
+  min-width: 0 !important;
+  padding: 12px !important;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(220, 231, 245, 0.9);
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(15, 43, 83, 0.13);
+  backdrop-filter: blur(14px);
+  z-index: 12;
+}
+
+.newscape-map-toolbar .search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 46px;
+  margin: 0 0 10px !important;
+  padding: 0 !important;
+  background: #f3f7fc;
+  border: 1px solid #e2eaf4;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.newscape-map-toolbar .search-icon {
+  padding-left: 14px;
+  color: #64748b;
+}
+
+.newscape-map-toolbar .search-bar input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 12px;
+  background: transparent !important;
+  color: #142e55 !important;
+  border: none;
+  outline: none;
+  font-size: 13px;
+}
+
+.newscape-map-toolbar .search-bar input::placeholder {
+  color: #8292a8;
+}
+
+.newscape-map-toolbar .search-button {
+  width: 46px;
+  min-width: 46px;
+  height: 46px;
+  padding: 0;
+  background: #1672ef;
+  color: white;
+  border: none;
+  border-radius: 0 11px 11px 0;
+  cursor: pointer;
+}
+
+.newscape-map-toolbar .filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin: 0 !important;
+}
+
+.newscape-map-toolbar .filter-group {
+  display: flex;
+  align-items: center;
+  flex: 1 1 125px;
+  min-width: 0;
+  height: 38px;
+  padding: 0 8px;
+  background: #f7f9fd;
+  border: 1px solid #e3eaf4;
+  border-radius: 9px;
+}
+
+.newscape-map-toolbar .filter-group select {
+  width: 100%;
+  min-width: 0;
+  padding: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #19365d;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.newscape-map-toolbar .reset-button,
+.newscape-map-toolbar .refresh-button {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.newscape-map-toolbar .reset-button {
+  background: #f3f6fb;
+  color: #304766;
+  border: 1px solid #e3eaf4;
+}
+
+.newscape-map-toolbar .refresh-button {
+  background: #eaf2ff;
+  color: #1672ef;
+  border: 1px solid #d5e5ff;
+}
+
+/* News sidebar — RIGHT */
+.newscape-floating-news {
+  position: absolute !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: 80px !important;
+  width: 365px !important;
+  max-width: calc(100% - 40px);
+  max-height: none !important;
+  padding: 18px !important;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #e1e9f5;
+  border-radius: 20px;
+  box-shadow: 0 14px 42px rgba(15, 43, 83, 0.16);
+  backdrop-filter: blur(16px);
+  z-index: 11;
+}
+
+.newscape-floating-news .latest-news-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0 2px;
+}
+
+.newscape-floating-news .latest-news-header h3 {
+  margin: 0;
+  color: #102c5a;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.newscape-floating-news .latest-news-header button {
+  color: #1672ef;
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Refined news cards */
+.newscape-floating-news .latest-news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: visible;
+}
+
+.newscape-floating-news .news-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-height: 115px;
+  margin: 0;
+  padding: 12px !important;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e4ebf5;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(16, 44, 90, 0.03);
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease,
+              border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.newscape-floating-news .news-card:hover {
+  transform: translateY(-2px);
+  border-color: #bad5fb;
+  box-shadow: 0 7px 20px rgba(16, 44, 90, 0.09);
+}
+
+.newscape-floating-news .news-thumbnail {
+  flex: 0 0 82px;
+  width: 82px !important;
+  min-width: 82px !important;
+  height: 88px !important;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+}
+
+.newscape-floating-news .news-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.newscape-floating-news .news-card-content h4 {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  margin: 0 0 8px;
+  color: #17325a;
+  font-size: 12px !important;
+  font-weight: 750;
+  line-height: 1.5 !important;
+  text-transform: none;
+}
+
+.newscape-floating-news .category-badge {
+  display: inline-block;
+  padding: 4px 9px;
+  background: #eaf2ff;
+  color: #1672ef;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.newscape-floating-news .news-card-content p {
+  margin: 6px 0 0;
+  color: #73849a;
+  font-size: 11px;
+}
+
+.newscape-floating-news .news-arrow {
+  align-self: center;
+  color: #9badc5;
+  font-size: 20px;
+}
+
+/* Map controls stay visible */
+.newscape-floating-map-type {
+  position: absolute !important;
+  top: 160px !important;
+  right: 400px !important;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 10;
+}
+
+/* Slim category legend */
+.newscape-floating-legend {
+  position: absolute !important;
+  left: 20px !important;
+  right: 20px !important;
+  bottom: 12px !important;
+  width: auto !important;
+  max-height: 56px;
+  padding: 10px 14px !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #e1e9f5;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(16, 44, 90, 0.1);
+  z-index: 10;
+}
+
+.newscape-floating-legend .legend-item {
+  font-size: 11px;
+}
+
+/* Smaller browser windows */
+@media (max-width: 1050px) {
+  .newscape-map-toolbar {
+    width: calc(100% - 420px) !important;
+  }
+
+  .newscape-floating-news {
+    width: 350px !important;
+  }
+
+  .newscape-floating-map-type {
+    right: 385px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .newscape-map-toolbar {
+    top: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+  }
+
+  .newscape-floating-news {
+    top: auto !important;
+    bottom: 80px !important;
+    right: 10px !important;
+    width: min(340px, calc(100% - 20px)) !important;
+    height: 240px;
+  }
+
+  .newscape-floating-map-type {
+    top: 190px !important;
+    right: 10px !important;
+  }
+
+  .newscape-floating-legend {
+    left: 10px !important;
+    right: 10px !important;
+    max-height: 58px;
+  }
+}
+
+/* ==========================================
+   NEWSCAPE — COLLAPSIBLE NEWS DRAWER
+   ========================================== */
+
+.newscape-floating-news {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.newscape-floating-news.news-panel-open {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.newscape-floating-news.news-panel-closed {
+  transform: translateX(calc(100% + 45px));
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* News drawer open / close button */
+.news-drawer-toggle {
+  position: absolute;
+  top: 92px;
+  right: 385px;
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 48px;
+  padding: 10px 14px;
+
+  background: #1672ef;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px 0 0 12px;
+
+  box-shadow: 0 5px 18px rgba(22, 114, 239, 0.25);
+
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition:
+    right 0.3s ease,
+    background 0.2s ease;
+}
+
+.news-drawer-toggle:hover {
+  background: #0d5fce;
+}
+
+.news-drawer-toggle span:first-child {
+  font-size: 23px;
+  line-height: 1;
+}
+
+.news-drawer-toggle.drawer-open {
+  right: 385px;
+}
+
+.news-drawer-toggle.drawer-closed {
+  right: 0;
+}
+
+/* Map and Satellite buttons */
+.newscape-floating-map-type {
+  position: absolute !important;
+  top: 185px !important;
+  right: 400px !important;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 12;
+}
+
+/* Map layout */
+.newscape-map-page {
+  isolation: isolate;
+}
+
+/* Tablet */
+@media (max-width: 1050px) {
+  .news-drawer-toggle.drawer-open {
+    right: 370px;
+  }
+
+  .newscape-floating-map-type {
+    right: 385px !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .news-drawer-toggle {
+    top: auto;
+    bottom: 330px;
+  }
+
+  .news-drawer-toggle.drawer-open {
+    right: min(350px, calc(100% - 10px));
+  }
+
+  .news-drawer-toggle.drawer-closed {
+    right: 0;
+  }
+
+  .newscape-floating-map-type {
+    top: 210px !important;
+    right: 10px !important;
+  }
+}
+
+
+/* Smaller category legend — leave room for zoom controls */
+
+.newscape-floating-legend {
+  left: 16px !important;
+  right: 90px !important;
+  bottom: 12px !important;
+  width: auto !important;
+  max-height: 48px !important;
+  padding: 7px 12px !important;
+  gap: 5px 10px !important;
+  overflow-y: auto;
+}
+
+.newscape-floating-legend .legend-item {
+  font-size: 10px !important;
+  gap: 5px;
+}
+
+.newscape-floating-legend .legend-dot {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+@media (max-width: 760px) {
+  .newscape-floating-legend {
+    right: 75px !important;
+    max-height: 45px !important;
+  }
+}
+
+
+/* Move Map / Satellite controls to top-right */
+
+.newscape-floating-map-type {
+  position: absolute !important;
+  top: 20px !important;
+  right: 405px !important;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 15 !important;
+}
+
+@media (max-width: 760px) {
+  .newscape-floating-map-type {
+    top: 200px !important;
+    right: 12px !important;
+  }
+}
+
+
+/* ==========================================
+   NEWSCAPE ANALYTICS DASHBOARD
+   ========================================== */
+
+.newscape-analytics-page {
+  min-height: calc(100vh - 75px);
+  background: #f5f8fd;
+  padding: 36px 28px 65px;
+}
+
+.analytics-dashboard {
+  max-width: 1450px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.analytics-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.analytics-heading h2 {
+  margin: 0 0 7px;
+  font-size: 30px;
+  font-weight: 800;
+  color: #142b49;
+}
+
+.analytics-heading p {
+  margin: 0;
+  color: #6b7c93;
+  font-size: 14px;
+}
+
+.analytics-live-label {
+  display: inline-flex;
+  align-items: center;
+  background: #e9f8f1;
+  color: #12805c;
+  padding: 9px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.analytics-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.analytics-stat-card {
+  background: #ffffff;
+  padding: 23px;
+  border-radius: 16px;
+  border: 1px solid #e8edf5;
+  box-shadow: 0 5px 20px rgba(31, 54, 84, 0.04);
+}
+
+.analytics-stat-card > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 650;
+  color: #667892;
+}
+
+.analytics-stat-card h3 {
+  margin: 13px 0 7px;
+  font-size: 32px;
+  font-weight: 800;
+  color: #173e72;
+}
+
+.analytics-stat-card p {
+  margin: 0;
+  color: #91a0b2;
+  font-size: 12px;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 22px;
+  align-items: stretch;
+  margin-bottom: 22px;
+}
+
+.analytics-panel {
+  background: #ffffff;
+  border: 1px solid #e8edf5;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 5px 22px rgba(31, 54, 84, 0.04);
+  min-width: 0;
+}
+
+.analytics-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 26px;
+}
+
+.analytics-panel-heading h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #183354;
+}
+
+.analytics-panel-heading p {
+  margin: 0;
+  color: #8795a8;
+  font-size: 12px;
+}
+
+.analytics-panel-tag {
+  display: inline-block;
+  padding: 6px 11px;
+  border-radius: 20px;
+  background: #edf4ff;
+  color: #286ce1;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Category leaderboard */
+
+.analytics-leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.analytics-leaderboard-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.analytics-rank {
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #8392a8;
+}
+
+.analytics-category-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.analytics-category-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 650;
+  color: #354b67;
+}
+
+.analytics-category-title strong {
+  color: #1b3558;
+}
+
+.analytics-bar-track {
+  height: 9px;
+  width: 100%;
+  background: #eef2f8;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.analytics-bar-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.6s ease;
+}
+
+/* Geotagging donut */
+
+.analytics-donut-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 25px;
+}
+
+.analytics-donut {
+  width: 205px;
+  height: 205px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.analytics-donut-center {
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.analytics-donut-center strong {
+  font-size: 31px;
+  font-weight: 800;
+  color: #193c66;
+}
+
+.analytics-donut-center span {
+  font-size: 12px;
+  color: #8a9bb0;
+  margin-top: 3px;
+}
+
+.analytics-geo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.analytics-geo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.analytics-geo-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #4b5f78;
+}
+
+.analytics-geo-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.analytics-geo-row strong {
+  color: #203b5d;
+  white-space: nowrap;
+}
+
+.analytics-geo-row small {
+  font-size: 11px;
+  color: #8b99aa;
+  font-weight: 500;
+}
+
+/* Cumulative growth chart */
+
+.analytics-timeline-panel {
+  margin-top: 0;
+}
+
+.analytics-chart-container {
+  width: 100%;
+}
+
+.analytics-line-chart {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  overflow: visible;
+}
+
+.analytics-chart-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 15px;
+  color: #8a9bb0;
+  font-size: 12px;
+}
+
+.analytics-chart-footer strong {
+  color: #2563eb;
+  font-size: 13px;
+}
+
+.analytics-empty {
+  padding: 25px 0;
+  text-align: center;
+  color: #8b99aa;
+  font-size: 13px;
+}
+
+.analytics-error {
+  padding: 20px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border-radius: 12px;
+}
+
+/* Responsive layouts */
+
+@media (max-width: 1000px) {
+  .analytics-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .newscape-analytics-page {
+    padding: 24px 15px 45px;
+  }
+
+  .analytics-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .analytics-heading h2 {
+    font-size: 25px;
+  }
+
+  .analytics-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-panel {
+    padding: 18px;
+  }
+
+  .analytics-donut {
+    width: 180px;
+    height: 180px;
+  }
+
+  .analytics-donut-center {
+    width: 125px;
+    height: 125px;
+  }
+}
+
+
+/* ==========================================
+   NEWSCAPE — ANIMATED CATEGORY LEADERBOARD
+   ========================================== */
+
+.analytics-race-panel {
+  overflow: hidden;
+  background: linear-gradient(
+    160deg,
+    #ffffff 0%,
+    #f9fbff 100%
+  );
+}
+
+.analytics-race {
+  position: relative;
+  width: 100%;
+}
+
+.analytics-race-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+
+  height: 58px;
+  padding: 8px 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  background: #ffffff;
+  border: 1px solid #e9eef6;
+  border-radius: 12px;
+
+  box-shadow: 0 3px 10px rgba(20, 44, 85, 0.035);
+
+  will-change: transform;
+}
+
+.analytics-race-rank {
+  width: 30px;
+  flex-shrink: 0;
+
+  font-size: 16px;
+  font-weight: 850;
+  color: #9aa9bd;
+  font-variant-numeric: tabular-nums;
+}
+
+.analytics-race-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.analytics-race-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.analytics-race-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 750;
+  color: #203958;
+}
+
+.analytics-race-dot {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.analytics-race-heading strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: #17365b;
+  font-variant-numeric: tabular-nums;
+}
+
+.analytics-race-track {
+  height: 10px;
+  width: 100%;
+
+  background: #edf2f8;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.analytics-race-fill {
+  height: 100%;
+  border-radius: 20px;
+
+  box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.08);
+  will-change: width;
+}
+
+.analytics-race-caption {
+  margin: 16px 0 0;
+  padding-top: 13px;
+
+  border-top: 1px solid #edf1f7;
+
+  font-size: 11px;
+  color: #92a0b3;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .analytics-race-row {
+    gap: 9px;
+    padding: 8px;
+  }
+
+  .analytics-race-name {
+    font-size: 11px;
+  }
+
+  .analytics-race-rank {
+    width: 24px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .analytics-race-row,
+  .analytics-race-fill {
+    will-change: auto;
+  }
+}
+
+
+/* Scrollable Latest News / All Headlines panel */
+.latest-news-list {
+  overflow-y: auto;
+  min-height: 0;
+  max-height: min(65vh, 650px);
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b9c6d8 transparent;
+}
+
+.latest-news-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.latest-news-list::-webkit-scrollbar-thumb {
+  background: #b9c6d8;
+  border-radius: 10px;
+}
+
+
+/* NEWSCAPE AUTHENTICATION BACKGROUND */
+
+.app:has(.ns-auth-card) {
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(
+      110deg,
+      rgba(8, 26, 52, 0.72),
+      rgba(27, 82, 121, 0.22)
+    ),
+    url('/city-night.jpg') center / cover fixed;
+}
+
+/* Soft animated city lighting */
+
+.app:has(.ns-auth-card)::before {
+  content: '';
+  position: absolute;
+  inset: 84px 0 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 75% 50%,
+      rgba(75, 196, 255, 0.23),
+      transparent 40%
+    );
+  animation: authGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes authGlow {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+/* Spacious glass-style login card */
+
+.app .ns-auth-card {
+  width: calc(100% - 32px) !important;
+  max-width: 490px !important;
+  margin: 70px auto !important;
+  padding: 42px !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.65) !important;
+  border-radius: 24px !important;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  box-shadow: 0 25px 75px rgba(4, 21, 42, 0.28) !important;
+}
+
+.ns-auth-card h2 {
+  color: #10294b;
+  font-size: 32px;
+  font-weight: 800;
+  margin: 12px 0 16px;
+}
+
+.ns-auth-card form {
+  gap: 22px !important;
+  margin-top: 28px;
+}
+
+.ns-auth-card label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #193957;
+}
+
+.ns-auth-card input {
+  margin-top: 10px !important;
+  padding: 16px !important;
+  min-height: 54px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px !important;
+}
+
+.ns-auth-card input:focus-visible {
+  outline: 3px solid rgba(48, 170, 235, 0.3);
+  border-color: #299ddc !important;
+}
+
+.ns-auth-card form button {
+  min-height: 52px;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 600px) {
+  .app .ns-auth-card {
+    margin: 30px auto !important;
+    padding: 26px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app:has(.ns-auth-card)::before {
+    animation: none;
+  }
+}
+
+
+/* ======================================
+   NEWS NEAR ME
+   ====================================== */
+
+.near-me-button {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0 14px;
+  min-height: 40px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.near-me-button:hover {
+  background: #dbeafe;
+}
+
+.near-me-button.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.near-me-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.news-distance {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+
+/* ==========================================
+   NEWS CARDS — KEEP TEXT INSIDE THE CARD
+   The news list is a column with a limited height, so the
+   browser was shrinking each card to its minimum height and
+   longer titles spilled out below. Cards must not shrink.
+   ========================================== */
+
+.newscape-floating-news .news-card {
+  flex-shrink: 0;
+  height: auto;
+  align-items: center;
+}
+
+.newscape-floating-news .news-card-content h4 {
+  -webkit-line-clamp: 2;
+}
+
+
+/* ==========================================
+   MAP PAGE — SAME DESIGN AS THE OTHER PAGES
+   Ocean blue glass panels and light blue accents (as on About and
+   Analytics). The live map stays as the background.
+   ========================================== */
+
+.insights-map {
+  background: #1B3566;
+  min-height: 100vh;
+}
+
+.insights-map .insights-nav {
+  background: #1B3566;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.insights-map .newscape-map-page {
+  height: calc(100dvh - 89px);
+  background: #1B3566;
+}
+
+/* Floating toolbar */
+
+.insights-map .newscape-map-toolbar {
+  background: rgba(32, 62, 115, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+}
+
+.insights-map .newscape-map-toolbar .search-bar {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.insights-map .newscape-map-toolbar .search-icon {
+  color: #a9bdd3;
+}
+
+.insights-map .newscape-map-toolbar .search-bar input {
+  color: #ffffff !important;
+}
+
+.insights-map .newscape-map-toolbar .search-bar input::placeholder {
+  color: #a9bdd3;
+}
+
+.insights-map .newscape-map-toolbar .search-button {
+  background: #8FB2FF;
+  color: #0E2350;
+}
+
+.insights-map .newscape-map-toolbar .filter-group {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #a9bdd3;
+}
+
+.insights-map .newscape-map-toolbar .filter-group select {
+  color: #ffffff;
+}
+
+/* Keep the dropdown list itself readable */
+.insights-map .newscape-map-toolbar .filter-group select option {
+  color: #1E3C70;
+  background: #ffffff;
+}
+
+.insights-map .newscape-map-toolbar .filter-group select:disabled {
+  color: #9AACD0;
+}
+
+.insights-map .newscape-map-toolbar .reset-button {
+  background: transparent;
+  color: #e1edf8;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.insights-map .newscape-map-toolbar .refresh-button {
+  background: rgba(143, 178, 255, 0.15);
+  color: #8FB2FF;
+  border: 1px solid rgba(143, 178, 255, 0.4);
+}
+
+.insights-map .near-me-button {
+  background: rgba(143, 178, 255, 0.15);
+  color: #8FB2FF;
+  border: 1px solid rgba(143, 178, 255, 0.4);
+}
+
+.insights-map .near-me-button:hover {
+  background: rgba(143, 178, 255, 0.25);
+}
+
+.insights-map .near-me-button.active {
+  background: #8FB2FF;
+  border-color: #8FB2FF;
+  color: #0E2350;
+}
+
+.insights-map .status-text {
+  color: #d1deec;
+}
+
+/* Latest News drawer */
+
+.insights-map .newscape-floating-news {
+  background: rgba(32, 62, 115, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(16px);
+}
+
+.insights-map .newscape-floating-news .latest-news-header h3 {
+  color: #ffffff;
+}
+
+.insights-map .newscape-floating-news .latest-news-header button {
+  color: #8FB2FF;
+}
+
+.insights-map .newscape-floating-news .news-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+
+.insights-map .newscape-floating-news .news-card:hover {
+  border-color: rgba(143, 178, 255, 0.6);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+.insights-map .newscape-floating-news .news-card-content h4 {
+  color: #ffffff;
+}
+
+.insights-map .newscape-floating-news .category-badge {
+  background: rgba(143, 178, 255, 0.15);
+  color: #8FB2FF;
+}
+
+.insights-map .newscape-floating-news .news-card-content p {
+  color: #b9cbe0;
+}
+
+.insights-map .newscape-floating-news .news-distance {
+  color: #8FB2FF;
+}
+
+.insights-map .newscape-floating-news .news-arrow {
+  color: #9AACD0;
+}
+
+.insights-map .newscape-floating-news .news-thumbnail {
+  background-color: rgba(143, 178, 255, 0.12);
+}
+
+.insights-map .news-count,
+.insights-map .no-news {
+  color: #a9bdd3;
+}
+
+.insights-map .news-drawer-toggle {
+  background: #8FB2FF;
+  color: #0E2350;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.35);
+}
+
+.insights-map .news-drawer-toggle:hover {
+  background: #B8CDFF;
+}
+
+/* Map / Satellite switch */
+
+.insights-map .map-type-control {
+  background: rgba(32, 62, 115, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+}
+
+.insights-map .map-type-control button {
+  background: transparent;
+  color: #d1deec;
+}
+
+.insights-map .map-type-control button.selected {
+  background: #8FB2FF;
+  color: #0E2350;
+}
+
+/* Category legend */
+
+.insights-map .newscape-floating-legend {
+  background: rgba(32, 62, 115, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.insights-map .newscape-floating-legend .legend-item {
+  color: #e1edf8;
+}
+
+
+/* ==========================================
+   NEWS POPUP — CLOSE BUTTON AND AI SUMMARY
+   ========================================== */
+
+.news-popup {
+  position: relative;
+  padding-top: 6px;
+}
+
+.news-popup h3 {
+  padding-right: 36px;
+}
+
+.popup-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: #F1F4F9;
+  color: #475569;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.popup-close-button:hover {
+  background: #E2E8F3;
+  color: #1B3566;
+}
+
+.popup-close-button:focus-visible {
+  outline: 2px solid #8FB2FF;
+  outline-offset: 2px;
+}
+
+.popup-summary {
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #F3F6FC;
+  border: 1px solid #E2E8F3;
+}
+
+.popup-summary-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #1B3566;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.popup-summary p {
+  margin: 0;
+  color: #334155;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.popup-summary-loading {
+  color: #64748b !important;
+  font-style: italic;
+}
+
+
+/* ==========================================
+   NO LOCATION ICON (NOT GEOTAGGED NEWS)
+   ========================================== */
+
+.no-location-icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+  object-fit: contain;
+  vertical-align: -0.15em;
+}
+
+.no-location-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
