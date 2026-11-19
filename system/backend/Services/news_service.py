@@ -116,7 +116,7 @@ def retrieve_news():
 
     # Retrieve articles published within the last two days.
     from_date = (
-        datetime.now(timezone.utc) - timedelta(days=0)
+        datetime.now(timezone.utc) - timedelta(days=1)
     ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     params = {
