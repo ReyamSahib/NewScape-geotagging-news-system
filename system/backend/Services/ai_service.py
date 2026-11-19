@@ -785,8 +785,20 @@ cybersecurity, digital platforms, computing, technological products,
 or technological developments.
 
 ENTERTAINMENT:
-Articles mainly about films, television, music, celebrities,
-performances, media productions, or the entertainment industry.
+Articles mainly about leisure, culture and things people go out
+to see or do. This includes:
+- films, television, music, concerts, celebrities, influencers,
+  performances, theatre, comedy shows and media productions
+- festivals, exhibitions, shows and fairs open to the public
+  (for example boat shows, motor shows, air shows, book fairs,
+  art fairs, food festivals, Global Village, Dubai Shopping Festival)
+- art, museums, galleries, heritage and cultural events
+- tourist attractions, theme parks, beaches, parks, hotels,
+  restaurants, dining, nightlife, fireworks and celebrations
+  (New Year, National Day and Eid events, parades)
+- lifestyle, fashion, gaming and esports
+An event that the public attends for enjoyment is Entertainment,
+even when a ruler, minister or government body opens or visits it.
 
 EDUCATION:
 Articles mainly about schools, universities, students, academic programs,
@@ -794,22 +806,32 @@ educational initiatives, or developments in the education sector.
 
 WEATHER:
 Articles mainly about weather conditions, forecasts, storms, rainfall,
-temperature, or other weather-related events.
+temperature, or other weather-related events. This includes fog,
+dust and sandstorms, humidity, heat, wind, rough seas, cloud seeding,
+flooding caused by rain, and weather alerts or warnings
+(for example from the National Centre of Meteorology, NCM).
+A road closed or a flight delayed BECAUSE of fog, rain or a storm is
+Weather when the weather itself is the main story.
 
 TRAFFIC & TRANSPORT:
 Articles mainly about road traffic, transport systems, public transportation,
 road closures, accidents affecting traffic, or mobility-related developments.
 
 HEALTH:
-Articles mainly about hospitals, healthcare services, medical treatments,
-diseases, public health, medical research, health programmes,
-or developments in the healthcare sector.
+Articles mainly about hospitals, clinics, doctors, nurses, healthcare
+services, medical treatments, surgery, medicines, vaccines, diseases,
+public health, mental health, food safety, nutrition, medical research,
+health insurance, health campaigns and programmes, or developments in
+the healthcare sector (for example news from the Department of Health,
+DHA, MOHAP, SEHA or Cleveland Clinic Abu Dhabi).
 Healthcare companies, hospital deals and medical research are Health,
 not Business or Technology, when the main subject is health.
 
 OTHER:
 Articles whose main subject does not reasonably fit any of the
-categories above.
+categories above. Use Other only as a LAST choice: before choosing
+Other, check again whether the article fits Entertainment, Health or
+Weather.
 
 Political news must be classified as Other.
 
@@ -832,6 +854,10 @@ CLASSIFICATION RULES
 
 7. If the main subject is politics, government policy, elections,
    political leaders, diplomacy, or political affairs, classify it as Other.
+   A leader or official simply attending, opening or visiting an event
+   does NOT make the article political: classify it by the event
+   (for example a boat show is Entertainment, a hospital opening is
+   Health, a sports final is Sports).
 
 
 CONFIDENCE

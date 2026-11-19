@@ -16,7 +16,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from database.database import get_database_connection
+from database.database import get_database_connection, CATEGORY_NAME_SQL
 
 # CATEGORY ANALYTICS
 
@@ -32,20 +32,28 @@ def get_category_distribution():
     connection = get_database_connection()
     cursor = connection.cursor()
 
-    # Count the number of articles assigned to each category.
-    # LEFT JOIN keeps categories visible even when they currently
-    # contain zero stored articles.
+    # Start every category at zero so categories without
+    # articles are still shown.
+    cursor.execute("SELECT category_Name FROM Category;")
+    counts = {row[0]: 0 for row in cursor.fetchall()}
+
+    # Count the articles by category NAME. Articles saved with a
+    # category number that is missing from the Category table
+    # (for example older Health articles) are counted under the
+    # name the pipeline meant (see CATEGORY_NAME_SQL).
     cursor.execute(
         """
-        SELECT c.category_Name, COUNT(n.news_ID)
-        FROM Category c
-        LEFT JOIN NewsItem n ON c.category_ID = n.category_ID
-        GROUP BY c.category_ID, c.category_Name
-        ORDER BY COUNT(n.news_ID) DESC;
+        SELECT """ + CATEGORY_NAME_SQL + """ AS category, COUNT(n.news_ID)
+        FROM NewsItem n
+        LEFT JOIN Category c ON n.category_ID = c.category_ID
+        GROUP BY category;
         """
     )
 
-    results = cursor.fetchall()
+    for category, count in cursor.fetchall():
+        counts[category] = counts.get(category, 0) + count
+
+    results = sorted(counts.items(), key=lambda item: item[1], reverse=True)
 
     # Close the database connection safely after retrieving the data.
     cursor.close()
@@ -254,4 +262,3 @@ def print_analytics_results():
 # automatically execute this test.
 if __name__ == "__main__":
     print_analytics_results()
-    
