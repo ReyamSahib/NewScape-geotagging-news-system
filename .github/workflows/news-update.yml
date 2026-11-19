@@ -26,10 +26,10 @@ jobs:
 
     steps:
       - name: Get the project code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -38,6 +38,10 @@ jobs:
 
       - name: Retrieve, process and store new articles
         env:
+          # The pipeline files import each other by name
+          # (e.g. "from news_service import ..."), so Python is told
+          # to look in the Services and backend folders.
+          PYTHONPATH: ${{ github.workspace }}/system/backend/Services:${{ github.workspace }}/system/backend:${{ github.workspace }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_PORT: ${{ secrets.DB_PORT }}
           DB_USER: ${{ secrets.DB_USER }}
