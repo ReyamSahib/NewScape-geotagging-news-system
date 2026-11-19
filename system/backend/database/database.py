@@ -443,7 +443,7 @@ def get_map_articles():
             SELECT
                 n.news_ID AS id,
                 n.title,
-                c.category_Name AS category,
+                """ + CATEGORY_NAME_SQL + """ AS category,
                 n.location_Text AS location,
                 n.latitude,
                 n.longitude,
@@ -454,7 +454,7 @@ def get_map_articles():
 
             FROM NewsItem n
 
-            JOIN Category c
+            LEFT JOIN Category c
                 ON n.category_ID = c.category_ID
 
             WHERE n.latitude BETWEEN 22 AND 27
@@ -471,6 +471,33 @@ def get_map_articles():
     finally:
         cursor.close()
         connection.close()
+
+
+# CATEGORY NAME FOR DISPLAY
+# Some older articles were saved with a fixed category number
+# (for example Health = 10) that does not exist in the Category
+# table, so they had no category name and never appeared under
+# Health or Weather. For those articles, the name is taken from
+# the numbers the pipeline used when saving them. Articles whose
+# category number exists in the table keep the table's name.
+
+CATEGORY_NAME_SQL = """
+    COALESCE(
+        c.category_Name,
+        CASE n.category_ID
+            WHEN 1 THEN 'Sports'
+            WHEN 2 THEN 'Finance'
+            WHEN 3 THEN 'Business'
+            WHEN 4 THEN 'Technology'
+            WHEN 5 THEN 'Entertainment'
+            WHEN 6 THEN 'Education'
+            WHEN 7 THEN 'Weather'
+            WHEN 8 THEN 'Traffic & Transport'
+            WHEN 10 THEN 'Health'
+            ELSE 'Other'
+        END
+    )
+"""
 
 
 def get_category_id(category_name):
@@ -548,7 +575,7 @@ def get_headline_articles():
             SELECT
                 n.news_ID AS id,
                 n.title,
-                c.category_Name AS category,
+                """ + CATEGORY_NAME_SQL + """ AS category,
                 n.location_Text AS location,
                 n.location_Type AS location_type,
                 n.latitude,
