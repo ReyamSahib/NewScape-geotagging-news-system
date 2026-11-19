@@ -212,8 +212,21 @@ def store_processed_articles(processed_articles):
 
     for article in processed_articles:
 
-        if insert_news_article(article):
-            stored_count += 1
+        # A lost connection to TiDB is retried once with a new
+        # connection. If it fails again, only this article is skipped
+        # and the other processed articles are still stored.
+        for attempt in range(2):
+            try:
+                if insert_news_article(article):
+                    stored_count += 1
+                break
+
+            except Exception as error:
+                if attempt == 0:
+                    print("Connection lost, retrying in 5 seconds...")
+                    time.sleep(5)
+                else:
+                    print("Skipping article after a second failure:", error)
 
     print("\nArticles successfully stored:", stored_count)
     print("=" * 60)

@@ -336,16 +336,32 @@ def insert_news_article(article):
         return True
 
     except mysql.connector.Error as error:
-        connection.rollback()
+        # The rollback itself fails when the connection to TiDB was
+        # lost, which used to stop the whole run. Ignore that here so
+        # the remaining articles can still be stored.
+        try:
+            connection.rollback()
+        except mysql.connector.Error:
+            pass
+
         print("Article database insert failed:", error)
+
+        # Let store_processed_articles try this article again.
+        if isinstance(error, (mysql.connector.errors.OperationalError,
+                              mysql.connector.errors.InterfaceError)):
+            raise
+
         return False
 
     finally:
-        if cursor is not None:
-            cursor.close()
+        try:
+            if cursor is not None:
+                cursor.close()
 
-        if connection is not None and connection.is_connected():
-            connection.close()
+            if connection is not None and connection.is_connected():
+                connection.close()
+        except mysql.connector.Error:
+            pass
 
 
 
