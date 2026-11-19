@@ -36,6 +36,53 @@ jobs:
       - name: Install packages
         run: pip install requests python-dotenv groq mysql-connector-python certifi
 
+      # TEMPORARY CHECK
+      # Shows whether the AI keys look right (without printing them)
+      # and whether GitHub can reach Groq. Can be removed once the
+      # news step works.
+      - name: Check AI keys and Groq connection
+        env:
+          LocationInferenceAPI: ${{ secrets.LOCATION_INFERENCE_API }}
+          CategoryClassificationAPI: ${{ secrets.CATEGORY_CLASSIFICATION_API }}
+          GeocodingAPI2: ${{ secrets.GEOCODING_API2 }}
+        run: |
+          python - <<'EOF'
+          import os
+          import httpx
+          from groq import Groq
+
+          # Check each key without printing it.
+          for name in ["LocationInferenceAPI", "CategoryClassificationAPI", "GeocodingAPI2"]:
+              key = os.getenv(name) or ""
+              print(
+                  name,
+                  "| length:", len(key),
+                  "| starts with gsk_:", key.startswith("gsk_"),
+                  "| extra spaces or new lines:", key != key.strip(),
+                  "| quotes:", '"' in key or "'" in key,
+              )
+
+          # Can GitHub reach Groq?
+          try:
+              response = httpx.get("https://api.groq.com/openai/v1/models", timeout=20)
+              print("Groq reachable, status:", response.status_code)
+          except Exception as error:
+              print("Groq NOT reachable:", repr(error))
+
+          # Try a real AI call and show the full error if it fails.
+          try:
+              client = Groq(api_key=(os.getenv("LocationInferenceAPI") or "").strip())
+              reply = client.chat.completions.create(
+                  model="openai/gpt-oss-120b",
+                  messages=[{"role": "user", "content": "Say OK"}],
+                  max_tokens=20,
+              )
+              print("Groq AI call worked.")
+          except Exception as error:
+              print("Groq AI call failed:", repr(error))
+              print("Real cause:", repr(error.__cause__))
+          EOF
+
       - name: Retrieve, process and store new articles
         env:
           # The pipeline files import each other by name
