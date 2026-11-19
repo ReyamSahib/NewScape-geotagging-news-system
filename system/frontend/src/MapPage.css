@@ -1,0 +1,600 @@
+/* ==========================================
+   NEWSCAPE MAP PAGE
+   Ocean blue design for the Explore Map page. Kept in its own
+   file and imported after App.css, so these rules always win.
+   ========================================== */
+
+
+/* ======================================
+   NEWS NEAR ME
+   ====================================== */
+
+.near-me-button {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0 14px;
+  min-height: 40px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.near-me-button:hover {
+  background: #dbeafe;
+}
+
+.near-me-button.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.near-me-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.news-distance {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+
+/* ==========================================
+   NEWS CARDS — KEEP TEXT INSIDE THE CARD
+   The news list is a column with a limited height, so the
+   browser was shrinking each card to its minimum height and
+   longer titles spilled out below. Cards must not shrink.
+   ========================================== */
+
+.newscape-floating-news .news-card {
+  flex-shrink: 0;
+  height: auto;
+  align-items: center;
+}
+
+.newscape-floating-news .news-card-content h4 {
+  -webkit-line-clamp: 2;
+}
+
+
+/* ==========================================
+   MAP PAGE — SAME DESIGN AS THE OTHER PAGES
+   Ocean blue glass panels and light blue accents (as on About and
+   Analytics). The live map stays as the background.
+   ========================================== */
+
+.insights-map {
+  background: #1B3566;
+  min-height: 100vh;
+}
+
+.insights-map .insights-nav {
+  background: #1B3566;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.insights-map .newscape-map-page {
+  height: calc(100dvh - 89px);
+  background: #1B3566;
+}
+
+/* Floating toolbar */
+
+.insights-map .newscape-map-toolbar {
+  background: rgba(32, 62, 115, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+}
+
+.insights-map .newscape-map-toolbar .search-bar {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.insights-map .newscape-map-toolbar .search-icon {
+  color: #a9bdd3;
+}
+
+.insights-map .newscape-map-toolbar .search-bar input {
+  color: #ffffff !important;
+}
+
+.insights-map .newscape-map-toolbar .search-bar input::placeholder {
+  color: #a9bdd3;
+}
+
+.insights-map .newscape-map-toolbar .search-button {
+  background: #8FB2FF;
+  color: #0E2350;
+}
+
+.insights-map .newscape-map-toolbar .filter-group {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #a9bdd3;
+}
+
+.insights-map .newscape-map-toolbar .filter-group select {
+  color: #ffffff;
+}
+
+/* Keep the dropdown list itself readable */
+.insights-map .newscape-map-toolbar .filter-group select option {
+  color: #1E3C70;
+  background: #ffffff;
+}
+
+.insights-map .newscape-map-toolbar .filter-group select:disabled {
+  color: #9AACD0;
+}
+
+.insights-map .newscape-map-toolbar .reset-button {
+  background: transparent;
+  color: #e1edf8;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.insights-map .newscape-map-toolbar .refresh-button {
+  background: rgba(143, 178, 255, 0.15);
+  color: #8FB2FF;
+  border: 1px solid rgba(143, 178, 255, 0.4);
+}
+
+.insights-map .near-me-button {
+  background: rgba(143, 178, 255, 0.15);
+  color: #8FB2FF;
+  border: 1px solid rgba(143, 178, 255, 0.4);
+}
+
+.insights-map .near-me-button:hover {
+  background: rgba(143, 178, 255, 0.25);
+}
+
+.insights-map .near-me-button.active {
+  background: #8FB2FF;
+  border-color: #8FB2FF;
+  color: #0E2350;
+}
+
+.insights-map .status-text {
+  color: #d1deec;
+}
+
+/* Latest News drawer */
+
+.insights-map .newscape-floating-news {
+  background: rgba(32, 62, 115, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(16px);
+}
+
+.insights-map .newscape-floating-news .latest-news-header h3 {
+  color: #ffffff;
+}
+
+.insights-map .newscape-floating-news .latest-news-header button {
+  color: #8FB2FF;
+}
+
+.insights-map .newscape-floating-news .news-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+
+.insights-map .newscape-floating-news .news-card:hover {
+  border-color: rgba(143, 178, 255, 0.6);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+.insights-map .newscape-floating-news .news-card-content h4 {
+  color: #ffffff;
+}
+
+.insights-map .newscape-floating-news .category-badge {
+  background: rgba(143, 178, 255, 0.15);
+  color: #8FB2FF;
+}
+
+.insights-map .newscape-floating-news .news-card-content p {
+  color: #b9cbe0;
+}
+
+.insights-map .newscape-floating-news .news-distance {
+  color: #8FB2FF;
+}
+
+.insights-map .newscape-floating-news .news-arrow {
+  color: #9AACD0;
+}
+
+.insights-map .newscape-floating-news .news-thumbnail {
+  background-color: rgba(143, 178, 255, 0.12);
+}
+
+.insights-map .news-count,
+.insights-map .no-news {
+  color: #a9bdd3;
+}
+
+.insights-map .news-drawer-toggle {
+  background: #8FB2FF;
+  color: #0E2350;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.35);
+}
+
+.insights-map .news-drawer-toggle:hover {
+  background: #B8CDFF;
+}
+
+/* Map / Satellite switch */
+
+.insights-map .map-type-control {
+  background: rgba(32, 62, 115, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+}
+
+.insights-map .map-type-control button {
+  background: transparent;
+  color: #d1deec;
+}
+
+.insights-map .map-type-control button.selected {
+  background: #8FB2FF;
+  color: #0E2350;
+}
+
+/* Category legend */
+
+.insights-map .newscape-floating-legend {
+  background: rgba(32, 62, 115, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.insights-map .newscape-floating-legend .legend-item {
+  color: #e1edf8;
+}
+
+
+/* ==========================================
+   NEWS POPUP — CLOSE BUTTON AND AI SUMMARY
+   ========================================== */
+
+.news-popup {
+  position: relative;
+  padding-top: 6px;
+}
+
+.news-popup h3 {
+  padding-right: 36px;
+}
+
+.popup-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: #F1F4F9;
+  color: #475569;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.popup-close-button:hover {
+  background: #E2E8F3;
+  color: #1B3566;
+}
+
+.popup-close-button:focus-visible {
+  outline: 2px solid #8FB2FF;
+  outline-offset: 2px;
+}
+
+.popup-summary {
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #F3F6FC;
+  border: 1px solid #E2E8F3;
+}
+
+.popup-summary-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #1B3566;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.popup-summary p {
+  margin: 0;
+  color: #334155;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.popup-summary-loading {
+  color: #64748b !important;
+  font-style: italic;
+}
+
+
+/* ==========================================
+   NO LOCATION ICON (NOT GEOTAGGED NEWS)
+   ========================================== */
+
+.no-location-icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+  object-fit: contain;
+  vertical-align: -0.15em;
+}
+
+.no-location-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+/* ==========================================
+   MAP CONTROLS — KEEP THEM VISIBLE
+   The toolbar was covering Google's fullscreen button and the
+   legend was covering the zoom buttons.
+   ========================================== */
+
+.insights-map .newscape-map-toolbar {
+  left: 70px !important;
+  width: min(720px, calc(100% - 500px)) !important;
+}
+
+.insights-map .newscape-floating-legend {
+  left: 70px !important;
+}
+
+@media (max-width: 760px) {
+  .insights-map .newscape-map-toolbar {
+    left: 60px !important;
+    right: 10px !important;
+    width: auto !important;
+  }
+
+  .insights-map .newscape-floating-legend {
+    left: 60px !important;
+  }
+}
+
+
+/* ==========================================
+   COMPACT TOOLBAR
+   Row 1: search + Reset + Refresh
+   Row 2: filters (smaller boxes)
+   ========================================== */
+
+.insights-map .newscape-map-toolbar {
+  padding: 10px !important;
+}
+
+.insights-map .toolbar-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.insights-map .toolbar-top .search-bar {
+  flex: 1;
+  min-width: 0;
+  height: 38px !important;
+  margin: 0 !important;
+}
+
+.insights-map .toolbar-top .search-button {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  font-size: 20px;
+}
+
+.insights-map .toolbar-top .reset-button,
+.insights-map .toolbar-top .refresh-button {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.insights-map .newscape-map-toolbar .filters {
+  gap: 6px !important;
+}
+
+.insights-map .newscape-map-toolbar .filter-group {
+  flex: 1 1 110px;
+  height: 32px;
+  padding: 0 6px;
+  border-radius: 8px;
+}
+
+.insights-map .newscape-map-toolbar .filter-group span {
+  font-size: 14px;
+}
+
+.insights-map .newscape-map-toolbar .filter-group select {
+  font-size: 11px;
+  padding: 2px;
+}
+
+.insights-map .newscape-map-toolbar .near-me-button {
+  min-height: 32px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 11px;
+  border-radius: 8px;
+}
+
+
+/* ==========================================
+   CATEGORY LEGEND — SPREAD ACROSS THE FULL WIDTH
+   ========================================== */
+
+.insights-map .newscape-floating-legend {
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px 14px !important;
+}
+
+
+/* ==========================================
+   REPORT ARTICLE (MAP POPUP) — Aqsa's reporting
+   ========================================== */
+
+.report-article {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #E2E8F3;
+}
+
+.report-article-link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.report-article-link:hover {
+  color: #b91c1c;
+}
+
+.report-article-form {
+  display: grid;
+  gap: 8px;
+}
+
+.report-article-form label {
+  color: #1B3566;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.report-article-form textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px solid #D5DEEC;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  color: #334155;
+  resize: vertical;
+}
+
+.report-article-form textarea:focus-visible {
+  outline: 2px solid #8FB2FF;
+  border-color: #8FB2FF;
+}
+
+.report-article-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.report-article-buttons button {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.report-article-cancel {
+  background: #F1F4F9;
+  color: #475569;
+  border: 1px solid #E2E8F3;
+}
+
+.report-article-submit {
+  background: #1B3566;
+  color: #ffffff;
+  border: 1px solid #1B3566;
+}
+
+.report-article-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.report-article-done {
+  margin: 0;
+  color: #15803d !important;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.report-article-error {
+  margin: 0;
+  color: #b91c1c !important;
+  font-size: 12px;
+}
+
+
+/* ==========================================
+   AI SUMMARY — AT MOST 6 LINES
+   ========================================== */
+
+.popup-summary p:not(.popup-summary-loading) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
+}
+
+
+/* ==========================================
+   REFRESH — NEW ARTICLES WAITING
+   ========================================== */
+
+.insights-map .newscape-map-toolbar .refresh-button.has-new {
+  background: #8FB2FF;
+  color: #0E2350;
+  border-color: #8FB2FF;
+  box-shadow: 0 0 0 3px rgba(143, 178, 255, 0.25);
+}
+
+.new-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 3px 7px;
+  border-radius: 20px;
+  background: #22c55e;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}

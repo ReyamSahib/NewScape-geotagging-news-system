@@ -109,3 +109,18 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+/* NewScape full-width layout */
+#root {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  min-height: 100vh;
+  text-align: left;
+  border: none;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}

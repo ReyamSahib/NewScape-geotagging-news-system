@@ -1,7 +1,8 @@
 """
 Database connection module for the NewScape Senior Project.
 
-This module connects the Python backend to the local MySQL database.
+This module connects the Python backend to the shared TiDB Cloud
+(MySQL-compatible) database used by the whole team.
 Database credentials are loaded from the project's .env file so that
 private information is not stored directly in the source code.
 """
@@ -10,6 +11,7 @@ import os
 from pathlib import Path
 from datetime import datetime
 
+import certifi
 import mysql.connector
 from dotenv import load_dotenv
 
@@ -22,15 +24,32 @@ ENV_PATH = PROJECT_ROOT / ".env"
 load_dotenv(ENV_PATH)
 
 
+# DATABASE CONNECTION
+
+# Connects to the shared TiDB Cloud database.
+# TiDB Cloud only accepts encrypted (TLS) connections, so the
+# certificate file is always passed. DB_SSL_CA can be set in .env;
+# otherwise the certificate bundle from certifi is used, which works
+# on both Mac and Windows.
+
 def get_database_connection():
-    # Create and return a connection to the NewScape MySQL database.
+    # Create and return a connection to the NewScape database.
+
+    ssl_ca = os.getenv("DB_SSL_CA") or certifi.where()
+
+    # Certificate checking is on by default. If a Mac shows
+    # "certificate verify failed", add DB_SSL_VERIFY=false to .env.
+    ssl_verify = os.getenv("DB_SSL_VERIFY", "true").lower() != "false"
 
     connection = mysql.connector.connect(
         host=os.getenv("DB_HOST"),
-        port=int(os.getenv("DB_PORT", "3306")),
+        port=int(os.getenv("DB_PORT", "4000")),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME")
+        database=os.getenv("DB_NAME"),
+        ssl_ca=ssl_ca,
+        ssl_verify_cert=ssl_verify,
+        ssl_verify_identity=ssl_verify
     )
 
     return connection
@@ -163,6 +182,39 @@ def article_exists(article_url):
 
 
 
+def article_title_exists(title):
+    """
+    Check whether an article with the same headline is already stored.
+
+    The same story can be published by different sources with
+    different URLs, so the headline is also checked before AI
+    processing. Capitals and extra spaces are ignored.
+    """
+    if not title:
+        return False
+
+    connection = get_database_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            SELECT news_ID
+            FROM NewsItem
+            WHERE LOWER(TRIM(title)) = LOWER(TRIM(%s))
+            LIMIT 1;
+            """,
+            (title,)
+        )
+
+        return cursor.fetchone() is not None
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
 # NEWS ARTICLE DATABASE OPERATIONS
 
 def insert_news_article(article):
@@ -181,6 +233,12 @@ def insert_news_article(article):
     # Outside-UAE articles should not be stored in NewScape.
     if coordinates == [-2.0, -2.0] or coordinates == [-2, -2]:
         print("Skipped outside-UAE article:", article.get("title"))
+        return False
+
+    # Excluded content (mockery of the UAE, sexual content, etc.)
+    # is marked -3 by the AI and is never stored.
+    if coordinates == [-3.0, -3.0] or coordinates == [-3, -3]:
+        print("Skipped excluded article:", article.get("title"))
         return False
 
     article_url = article.get("url")
@@ -212,7 +270,13 @@ def insert_news_article(article):
         connection = get_database_connection()
         cursor = connection.cursor()
 
-        category_id = category_result.get("category_id")
+        # Look the category up by NAME in the Category table.
+        # The fixed IDs in category_mapping (e.g. Health = 10) do not
+        # always match the IDs TiDB gave the categories, which stored
+        # Health and Weather news under a missing or wrong category.
+        category_id = get_category_id(
+            category_result.get("category") or "Other"
+        )
 
         location_type = location_result.get("location_type", "")
         location_type = location_type.lower()
@@ -310,7 +374,7 @@ def print_stored_articles():
             FROM NewsItem n
             JOIN Source s ON n.source_ID = s.source_ID
             JOIN Category c ON n.category_ID = c.category_ID
-            ORDER BY n.news_ID DESC;
+            ORDER BY n.published_datetime DESC, n.news_ID DESC;
             """
         )
 
@@ -368,7 +432,9 @@ def get_map_articles():
                 n.latitude,
                 n.longitude,
                 n.article_URL AS url,
-                n.content_Text AS content
+                n.content_Text AS content,
+                n.location_Type AS location_type,
+                n.published_datetime
 
             FROM NewsItem n
 
@@ -378,7 +444,7 @@ def get_map_articles():
             WHERE n.latitude BETWEEN 22 AND 27
               AND n.longitude BETWEEN 51 AND 57
 
-            ORDER BY n.news_ID DESC;
+            ORDER BY n.published_datetime DESC, n.news_ID DESC;
             """
         )
 
@@ -389,6 +455,104 @@ def get_map_articles():
     finally:
         cursor.close()
         connection.close()
+
+
+def get_category_id(category_name):
+    """
+    Return the category_ID for a category name.
+    The category is added to the Category table if it is missing.
+    """
+    connection = get_database_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            "SELECT category_ID FROM Category WHERE category_Name = %s;",
+            (category_name,)
+        )
+        row = cursor.fetchone()
+
+        if row:
+            return row[0]
+
+        cursor.execute(
+            "INSERT INTO Category (category_Name) VALUES (%s);",
+            (category_name,)
+        )
+        connection.commit()
+
+        return cursor.lastrowid
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+def get_news_status():
+    """
+    Count the stored articles that are visible on the website
+    (hidden articles are not counted). Used by the Refresh button
+    to know when new articles have been saved.
+    """
+    connection = get_database_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            SELECT COUNT(*)
+            FROM NewsItem
+            WHERE news_ID NOT IN (
+                SELECT news_ID
+                FROM ArticleReport
+                WHERE status = 'article_hidden'
+            );
+            """
+        )
+
+        return {"total_articles": cursor.fetchone()[0]}
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+def get_headline_articles():
+    """
+    Retrieve stored news for the Latest News panel.
+    Includes articles without usable coordinates.
+    Does not modify database records.
+    """
+    connection = get_database_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            """
+            SELECT
+                n.news_ID AS id,
+                n.title,
+                c.category_Name AS category,
+                n.location_Text AS location,
+                n.location_Type AS location_type,
+                n.latitude,
+                n.longitude,
+                n.article_URL AS url,
+                n.content_Text AS content,
+                n.published_datetime
+            FROM NewsItem n
+            LEFT JOIN Category c
+                ON n.category_ID = c.category_ID
+            ORDER BY n.published_datetime DESC, n.news_ID DESC;
+            """
+        )
+
+        return cursor.fetchall()
+
+    finally:
+        cursor.close()
+        connection.close()
+
 
 # Run the connection test only when this file is executed directly.
 if __name__ == "__main__":

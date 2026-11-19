@@ -1,0 +1,128 @@
+/* ======================================
+   PAGE LOADING SCREEN — RIPPLE PULSE
+   ====================================== */
+
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 96px;
+  background: linear-gradient(120deg, #18305E, #2A4A84);
+  font-family: Arial, Helvetica, sans-serif;
+
+  /* Stays for about 2 seconds, then fades away */
+  animation: pageLoaderFadeOut 0.4s ease 1.8s forwards;
+}
+
+.page-loader-pulse {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+
+/* The logo on its own (no background), gently "beating" */
+.page-loader-badge {
+  position: relative;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  display: grid;
+  place-items: center;
+  animation: pageLoaderBeat 1s ease-in-out infinite;
+}
+
+.page-loader-logo {
+  width: 136px;
+  height: auto;
+  object-fit: contain;
+
+  /* Soft light outline so the navy logo stands out on the blue page */
+  filter:
+    drop-shadow(0 0 1px rgba(230, 238, 255, 0.9))
+    drop-shadow(0 0 12px rgba(143, 178, 255, 0.55));
+}
+
+/* Rings spreading out from the logo, like a location signal */
+.page-loader-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #8FB2FF;
+  animation: pageLoaderRipple 1.8s ease-out infinite;
+}
+
+.page-loader-ring.second {
+  animation-delay: 0.6s;
+}
+
+.page-loader-ring.third {
+  animation-delay: 1.2s;
+}
+
+.page-loader-text {
+  color: #A9C3FF;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+@keyframes pageLoaderRipple {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  to {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes pageLoaderBeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes pageLoaderFadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-loader-ring,
+  .page-loader-badge {
+    animation: none;
+  }
+
+  .page-loader {
+    animation-delay: 0.6s;
+  }
+}
+
+/* Short version (half a second): after login / sign up / log out
+   and when the browser page is reloaded */
+.page-loader.quick {
+  animation: pageLoaderFadeOut 0.2s ease 0.3s forwards;
+}
+
+/* Waits while the page loads its data (Analytics), then fades
+   away as soon as the data is ready */
+.page-loader.waiting {
+  animation: none;
+}
+
+.page-loader:not(.waiting).ready {
+  animation: pageLoaderFadeOut 0.4s ease forwards;
+}
