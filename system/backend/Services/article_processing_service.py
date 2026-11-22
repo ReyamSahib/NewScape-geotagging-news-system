@@ -20,6 +20,7 @@ if str(BACKEND_DIR) not in sys.path:
 
 from news_service import retrieve_all_news
 from ai_service import detect_event_location_groq, classify_article_groq, category_mapping
+from ai_service import detect_photo_landmark
 from database.database import (
     article_exists,
     article_title_exists,
@@ -95,6 +96,10 @@ def process_articles(articles, max_articles=None):
                 print("Skipping article.")
                 continue
 
+        if location_result.get("location_type") == "NOT_GEOTAGGABLE":
+            landmark = detect_photo_landmark(article.get("urlToImage"))
+            if landmark:
+                print("Photo landmark suggestion:", landmark)
         # Wait between Groq API calls to reduce the chance of
         # hitting the API rate limit.
         time.sleep(5)
