@@ -40,3 +40,6 @@ dist/
 
 # Local Streamlit configuration
 .streamlit/
+
+# Locally cached publisher image URLs
+system/backend/Services/image_cache.json

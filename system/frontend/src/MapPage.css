@@ -164,63 +164,6 @@
   color: #d1deec;
 }
 
-/* Latest News drawer */
-
-.insights-map .newscape-floating-news {
-  background: rgba(32, 62, 115, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(16px);
-}
-
-.insights-map .newscape-floating-news .latest-news-header h3 {
-  color: #ffffff;
-}
-
-.insights-map .newscape-floating-news .latest-news-header button {
-  color: #8FB2FF;
-}
-
-.insights-map .newscape-floating-news .news-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: none;
-}
-
-.insights-map .newscape-floating-news .news-card:hover {
-  border-color: rgba(143, 178, 255, 0.6);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
-}
-
-.insights-map .newscape-floating-news .news-card-content h4 {
-  color: #ffffff;
-}
-
-.insights-map .newscape-floating-news .category-badge {
-  background: rgba(143, 178, 255, 0.15);
-  color: #8FB2FF;
-}
-
-.insights-map .newscape-floating-news .news-card-content p {
-  color: #b9cbe0;
-}
-
-.insights-map .newscape-floating-news .news-distance {
-  color: #8FB2FF;
-}
-
-.insights-map .newscape-floating-news .news-arrow {
-  color: #9AACD0;
-}
-
-.insights-map .newscape-floating-news .news-thumbnail {
-  background-color: rgba(143, 178, 255, 0.12);
-}
-
-.insights-map .news-count,
-.insights-map .no-news {
-  color: #a9bdd3;
-}
 
 .insights-map .news-drawer-toggle {
   background: #8FB2FF;

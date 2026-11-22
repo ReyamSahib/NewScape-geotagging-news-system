@@ -11,6 +11,13 @@ from mysql.connector import IntegrityError
 from pwdlib import PasswordHash
 from pydantic import BaseModel, EmailStr, Field
 
+from typing import Optional
+
+import threading
+from contextlib import asynccontextmanager
+
+from system.backend.Services.image_worker import automatic_image_worker
+
 # The news pipeline files import each other by name
 # (e.g. "from news_service import ..."), so the Services
 # folder is added to Python's search path.
@@ -39,7 +46,19 @@ from system.backend.Services.popularity_service import (
     get_popular_news,
 )
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    worker = threading.Thread(
+        target=automatic_image_worker,
+        name="newscape-image-worker",
+        daemon=True,
+    )
+    worker.start()
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 password_hasher = PasswordHash.recommended()
 report_bearer = HTTPBearer(auto_error=False)
 
@@ -89,12 +108,22 @@ def get_hidden_article_ids():
             return {row[0] for row in cursor.fetchall()}
 
 
+from system.backend.Services.image_service import get_cached_image
+
+
+def add_news_image(article):
+    return {
+        **article,
+        "image_url": get_cached_image(article.get("url"))
+    }
+
 @app.get("/headlines")
 def headlines():
     hidden_ids = get_hidden_article_ids()
 
     return [
-        article for article in get_headline_articles()
+        add_news_image(article)
+        for article in get_headline_articles()
         if article["id"] not in hidden_ids
     ]
 
@@ -120,7 +149,11 @@ def articles():
     map_articles = get_map_articles()
     hidden_ids = get_hidden_article_ids()
 
-    return [article for article in map_articles if article["id"] not in hidden_ids]
+    return [
+        add_news_image(article)
+        for article in map_articles
+        if article["id"] not in hidden_ids
+    ]
 
 
 # ANALYTICS SUMMARY API
@@ -305,7 +338,7 @@ def login_account(request: LoginRequest):
 
 
 def get_reporting_user_id(
-    credentials: HTTPAuthorizationCredentials | None = Depends(report_bearer),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(report_bearer),
 ) -> int:
     unauthorized = HTTPException(
         status_code=401,

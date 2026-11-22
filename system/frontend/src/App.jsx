@@ -805,6 +805,57 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
+
+  // Automatically update news images from the backend cache.
+  useEffect(() => {
+    const updateNewsImages = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/headlines`,
+          { cache: "no-store" }
+        );
+
+        if (!response.ok) return;
+
+        const latestNews = await response.json();
+        if (!Array.isArray(latestNews)) return;
+
+        const imagesById = new Map(
+          latestNews.map((article) => [
+            article.id,
+            article.image_url || null
+          ])
+        );
+
+        setHeadlines((currentNews) => {
+          let changed = false;
+
+          const updatedNews = currentNews.map((article) => {
+            if (!imagesById.has(article.id)) return article;
+
+            const imageUrl = imagesById.get(article.id);
+
+            if ((article.image_url || null) === imageUrl) {
+              return article;
+            }
+
+            changed = true;
+            return { ...article, image_url: imageUrl };
+          });
+
+          return changed ? updatedNews : currentNews;
+        });
+      } catch (error) {
+        console.error("Unable to refresh news images:", error);
+      }
+    };
+
+    const timer = setInterval(updateNewsImages, 60000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+
   // Number of saved articles that are not shown yet.
   const waitingArticleCount =
     savedArticleCount !== null
@@ -1708,78 +1759,139 @@ function App() {
                   </p>
                 )}
 
-                            {(showAllHeadlines
-                ? headlinesWithDistance
-                : headlinesWithDistance.slice(0, 5)
-              ).map((article) => (
-                  <button
-                    type="button"
-                    className="news-card"
-                    key={article.id}
-                    onClick={() =>
-                      openArticle(article)
-                    }
-                  >
-                    <div
-                      className="news-thumbnail"
-                      style={{
-                        backgroundImage:
-                          article.image_url
-                            ? `url("${article.image_url}")`
-                            : undefined,
-                      }}
-                    >
-                      {!article.image_url && (
-                        <span>📰</span>
-                      )}
-                    </div>
 
-                    <div className="news-card-content">
-                      <h4>
-                        {article.title}
-                      </h4>
+{(showAllHeadlines
+  ? headlinesWithDistance
+  : headlinesWithDistance.slice(0, 5)
+).map((article) => {
+  const canShowOnMap = hasUsableCoordinates(article);
+  const categoryColor =
+    categoryColors[article.category] || categoryColors.Other;
 
-                      <span className="category-badge">
-                        {article.category}
-                      </span>
+  return (
+    <div className="news-card" key={article.id}>
+      <div
+        className="news-thumbnail"
+        style={{
+          backgroundImage: article.image_url
+            ? `url("${article.image_url}")`
+            : undefined,
+        }}
+      >
+        {!article.image_url && <span>📰</span>}
+      </div>
 
-                      {newArticleIds.has(article.id) && (
-                        <span className="new-badge">NEW</span>
-                      )}
+      <div className="news-card-content">
+        <button
+          type="button"
+          className="news-headline-button"
+          onClick={() => openArticle(article)}
+        >
+          {article.title}
+        </button>
 
-                      {hasUsableCoordinates(article) ? (
-                        <p>
-                          📍 {article.location || "UAE"}
-                        </p>
-                      ) : (
-                        <p className="no-location-text">
-                          <NoLocationIcon /> Location not identified
-                        </p>
-                      )}
+        <div className="news-badges">
+          <span
+            className="category-badge"
+            style={{
+              color: categoryColor,
+              backgroundColor: `${categoryColor}16`,
+              borderColor: `${categoryColor}55`,
+            }}
+          >
+            {article.category || "Other"}
+          </span>
 
-                      {article.distance_km !== undefined && (
-                        <p className="news-distance">
-                          🧭 {formatDistance(article.distance_km)}
-                        </p>
-                      )}
+          {newArticleIds.has(article.id) && (
+            <span className="new-badge">NEW</span>
+          )}
+        </div>
 
-                      {(article.published_datetime ||
-                        article.publishedAt) && (
-                        <p>
-                          ▦{" "}
-                          {formatDate(
-                            article.published_datetime ||
-                              article.publishedAt
-                          )}
-                        </p>
-                      )}
-                    </div>
+        <div className="news-card-meta">
+          <p className="news-location-line">
+            {canShowOnMap ? (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+                  <circle cx="12" cy="10" r="2.5" />
+                </svg>
+                <span>{article.location || "UAE"}</span>
+              </>
+            ) : (
+              <>
+                <NoLocationIcon />
+                <span>Location not identified</span>
+              </>
+            )}
+          </p>
 
-                    <span className="news-arrow">
-                      ›
-                    </span>
-                  </button>
-                ))}
+          {(article.published_datetime ||
+            article.publishedAt) && (
+            <p className="news-date-line">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <rect x="3" y="5" width="18" height="16" rx="2" />
+                <path d="M7 3v4M17 3v4M3 10h18" />
+              </svg>
+              <span>
+                {formatDate(
+                  article.published_datetime ||
+                    article.publishedAt
+                )}
+              </span>
+            </p>
+          )}
+
+          {article.distance_km !== undefined && (
+            <p className="news-distance">
+              {formatDistance(article.distance_km)} away
+            </p>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="news-show-map-button"
+          disabled={!canShowOnMap}
+          onClick={() => {
+            focusMap(
+              {
+                lat: Number(article.latitude),
+                lng: Number(article.longitude),
+              },
+              11
+            );
+            setSelectedArticle(article);
+          }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden="true"
+          >
+            <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+            <circle cx="12" cy="10" r="2.5" />
+          </svg>
+          Show on Map
+        </button>
+      </div>
+    </div>
+  );
+})}
+
             </div>
 
             <div className="news-count">
@@ -1818,7 +1930,11 @@ function App() {
           </button>
 
           {/* MAP / SATELLITE BUTTONS */}
-          <div className="map-type-control newscape-floating-map-type">
+          <div
+            className={`map-type-control newscape-floating-map-type ${
+              newsPanelOpen ? "news-visible" : "news-hidden"
+            }`}
+          >
             <button
               type="button"
               className={
