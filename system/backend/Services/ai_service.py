@@ -946,7 +946,33 @@ category_mapping = {
     "Other": 9,
     "Health": 10
 }
+def detect_photo_landmark(image_url):
+    if not image_url:
+        return None
 
+    try:
+        response = groq_client.chat.completions.create(
+            model="qwen/qwen3.8-27b",
+            messages=[{
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": (
+                            "Identify the recognizable landmark in this photo. "
+                            "Return only the landmark name and city. "
+                            "If you cannot identify it reliably, say UNKNOWN."
+                        ),
+                    },
+                    {"type": "image_url", "image_url": {"url": image_url}},
+                ],
+            }],
+        )
+        name = (response.choices[0].message.content or "").strip()
+        return None if not name or name.upper() == "UNKNOWN" else name
+    except Exception as error:
+        print("Photo detection failed:", type(error).__name__)
+        return None
 
 # LOCAL SETUP TEST
 
