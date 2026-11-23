@@ -1,3 +1,4 @@
+import "./AnalyticsTheme.css";
 import { useEffect, useState } from "react";
 
 const API = "http://127.0.0.1:8000";
@@ -110,7 +111,7 @@ function CumulativeChart({ data }) {
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label="Cumulative published article count over time"
+        aria-label="Cumulative published news count over time"
         className="analytics-line-chart"
       >
         <defs>
@@ -189,7 +190,7 @@ function CumulativeChart({ data }) {
             strokeWidth="2"
           >
             <title>
-              {`${point.date}: ${point.cumulative_count} articles`}
+              {`${point.date}: ${point.cumulative_count} news`}
             </title>
           </circle>
         ))}
@@ -216,9 +217,9 @@ function CumulativeChart({ data }) {
       </svg>
 
       <div className="analytics-chart-footer">
-        <span>Based on article publication dates</span>
+        <span>Based on news publication dates</span>
         <strong>
-          {formatNumber(last.cumulative_count)} articles
+          {formatNumber(last.cumulative_count)} news
         </strong>
       </div>
     </div>
@@ -569,92 +570,67 @@ export default function AnalyticsDashboard({ onLoadingChange }) {
     <section className="analytics-dashboard">
       <div className="analytics-heading">
         <div>
-          <h2>News Analytics</h2>
+          <h2>Analytics Overview</h2>
           <p>
-            Explore news coverage and geotagging performance
+            Real-time insights into UAE news coverage and geotagging performance
           </p>
         </div>
 
         <span className="analytics-live-label">
-          ● Live Database Statistics
+          ● LIVE DATA
         </span>
       </div>
 
-      {/* EXISTING OVERVIEW CARDS */}
+      {/* Summary cards — live values from the existing API */}
       <div className="analytics-stats">
         <div className="analytics-stat-card">
-          <span>Total Articles</span>
+          <span><span className="analytics-stat-icon">▤</span> Total News</span>
           <h3>{formatNumber(total)}</h3>
-          <p>Stored news articles</p>
+          <p>All stored news</p>
         </div>
-
         <div className="analytics-stat-card">
-          <span>Geotagged Articles</span>
+          <span><span className="analytics-stat-icon">⌖</span> Geotagged News</span>
           <h3>{formatNumber(geotagged)}</h3>
-          <p>Articles available on the map</p>
+          <p>Available on the map</p>
         </div>
-
         <div className="analytics-stat-card">
-          <span>Geotagging Rate</span>
-          <h3>{rate}%</h3>
-          <p>Percentage with usable locations</p>
-        </div>
-
-        <div className="analytics-stat-card">
-          <span>Unlocated Articles</span>
+          <span><span className="analytics-stat-icon">◎</span> Unlocated News</span>
           <h3>{formatNumber(unlocated)}</h3>
-          <p>Articles without usable map locations</p>
+          <p>No usable map coordinates</p>
+        </div>
+        <div className="analytics-stat-card">
+          <span><span className="analytics-stat-icon">◔</span> Geotagging Rate</span>
+          <h3>{rate}%</h3>
+          <p>Of all stored news</p>
         </div>
       </div>
 
+      {/* MAIN CHARTS: growth and location breakdown, side by side */}
+      <div className="analytics-primary-grid">
       {/* CUMULATIVE TIMELINE — shown directly after the overview cards */}
-      <div
+        <div
         className="analytics-panel analytics-timeline-panel"
-        style={{ marginBottom: 22 }}
       >
         <div className="analytics-panel-heading">
           <div>
-            <h3>Cumulative News Growth</h3>
+            <h3>News Growth Over Time</h3>
             <p>
-              Total published articles accumulated over time
+              Cumulative news by publication date
             </p>
           </div>
           <span className="analytics-panel-tag">
-            Timeline
+            ALL TIME
           </span>
         </div>
 
         <CumulativeChart data={timeline} />
       </div>
-      {/* MAIN CHARTS */}
-      <div className="analytics-grid">
-        {/* CATEGORY LEADERBOARD */}
-        
-        <div className="analytics-panel analytics-race-panel">
-        <div className="analytics-panel-heading">
-            <div>
-            <h3>Category Leaderboard</h3>
-            <p>News categories ranked by article volume</p>
-            </div>
-            <span className="analytics-panel-tag">
-            Rankings
-            </span>
-        </div>
-
-        <AnimatedCategoryLeaderboard data={leaderboard} />
-
-        <p className="analytics-race-caption">
-            Animated ranking display · Based on current stored articles
-        </p>
-        </div>
-
-
         {/* GEOTAGGING DISTRIBUTION */}
         <div className="analytics-panel">
           <div className="analytics-panel-heading">
             <div>
-              <h3>Geotagging Breakdown</h3>
-              <p>How article locations were identified</p>
+              <h3>Location Distribution</h3>
+              <p>How locations were identified</p>
             </div>
           </div>
 
@@ -706,7 +682,7 @@ export default function AnalyticsDashboard({ onLoadingChange }) {
                     <strong>
                       {formatNumber(geoTotal)}
                     </strong>
-                    <span>Articles</span>
+                    <span>News</span>
                   </div>
                 </div>
               </div>
@@ -756,14 +732,38 @@ export default function AnalyticsDashboard({ onLoadingChange }) {
         </div>
       </div>
 
-      {/* SOURCES AND POPULAR NEWS */}
-      <div className="analytics-grid analytics-grid-even">
+      {/* Balanced lower dashboard, like the selected design */}
+      <div className="analytics-lower-grid">
+      <div className="analytics-category-section">
+        {/* CATEGORY LEADERBOARD */}
+        
+        <div className="analytics-panel analytics-race-panel">
+        <div className="analytics-panel-heading">
+            <div>
+            <h3>News by Category</h3>
+            <p>Category distribution across stored news</p>
+            </div>
+            <span className="analytics-panel-tag">
+            Rankings
+            </span>
+        </div>
+
+        <AnimatedCategoryLeaderboard data={leaderboard} />
+
+      
+        </div>
+
+
+      </div>
+
+      {/* SOURCE COMPARISON */}
+      <div className="analytics-source-section">
         {/* NEWS SOURCE COMPARISON */}
         <div className="analytics-panel">
           <div className="analytics-panel-heading">
             <div>
-              <h3>News Source Comparison</h3>
-              <p>How many articles each source contributes</p>
+              <h3>Top News Sources</h3>
+              <p>Coverage volume by news publisher</p>
             </div>
             <span className="analytics-panel-tag">
               {sortedSources.length} sources
@@ -812,6 +812,11 @@ export default function AnalyticsDashboard({ onLoadingChange }) {
           )}
         </div>
 
+      </div>
+      </div>
+
+      {/* Popular stories stay on the same scrollable dashboard */}
+      <div className="analytics-popularity-section">
         {/* MOST POPULAR NEWS */}
         <div className="analytics-panel">
           <div className="analytics-panel-heading">

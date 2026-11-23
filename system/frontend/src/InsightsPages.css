@@ -896,3 +896,165 @@
   color: #fca5a5;
   font-size: 14px;
 }
+
+/* NEWSCAPE ABOUT PAGE — BACKGROUND ONLY */
+
+.insights-page:has(> .insights-about) {
+  background:
+    radial-gradient(
+      ellipse at 85% 25%,
+      rgba(34, 89, 152, 0.23),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 10% 85%,
+      rgba(21, 113, 170, 0.13),
+      transparent 45%
+    ),
+    linear-gradient(
+      135deg,
+      #0b1327 0%,
+      #101e36 55%,
+      #0b1327 100%
+    ) !important;
+}
+
+/* ABOUT PAGE — EXACT NAVIGATION COLOR */
+.insights-about .insights-nav {
+  background: #0A0F1F !important;
+}
+
+
+/* NEWSCAPE — MODERN LOGIN DESIGN */
+
+.insights-auth {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 76% 48%,
+      rgba(36, 103, 174, 0.22), transparent 52%),
+    radial-gradient(ellipse at 12% 88%,
+      rgba(21, 147, 195, 0.12), transparent 48%),
+    linear-gradient(130deg,
+      #0a0f1f 0%, #101c32 55%, #0a0f1f 100%) !important;
+}
+
+.insights-auth .insights-nav {
+  background: #0a0f1f !important;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.insights-auth .insights-auth-content {
+  width: min(1160px, 90%);
+  min-height: calc(100vh - 100px);
+  padding: 65px 0 90px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 460px);
+  gap: clamp(40px, 7vw, 110px);
+  align-items: center;
+}
+
+/* Welcome text on the left */
+.insights-auth .insights-label {
+  color: #45d7f5;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+.insights-auth .insights-auth-intro h1 {
+  color: #ffffff;
+  font-size: clamp(40px, 4.5vw, 60px);
+  line-height: 1.1;
+  letter-spacing: -2px;
+  max-width: 550px;
+}
+
+.insights-auth .insights-auth-intro p {
+  color: #adbed6;
+  font-size: 16px;
+  line-height: 1.8;
+  max-width: 460px;
+}
+
+/* Login card on the right */
+.insights-auth .ns-auth-card {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 38px !important;
+  background: rgba(22, 39, 65, 0.88) !important;
+  border: 1px solid rgba(116, 164, 205, 0.23) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 65px rgba(0, 0, 0, 0.32) !important;
+  backdrop-filter: blur(22px);
+}
+
+.insights-auth .ns-auth-card h2 {
+  color: #ffffff;
+  font-size: 29px;
+  letter-spacing: -0.8px;
+}
+
+.insights-auth .ns-auth-card p {
+  color: #aebdd3 !important;
+}
+
+.insights-auth .ns-auth-card label {
+  color: #e3edfa;
+  font-size: 13px;
+}
+
+/* Email and password fields */
+.insights-auth .ns-auth-card input {
+  width: 100%;
+  min-height: 51px;
+  background: #0e1b30 !important;
+  color: #ffffff !important;
+  border: 1px solid #304763 !important;
+  border-radius: 11px !important;
+}
+
+.insights-auth .ns-auth-card input:focus {
+  outline: 2px solid rgba(56, 211, 244, 0.3);
+  border-color: #38d3f4 !important;
+}
+
+/* Primary login button */
+.insights-auth .ns-auth-card form button[type="submit"] {
+  min-height: 52px;
+  background: #35c9ec !important;
+  color: #07172a !important;
+  border: none !important;
+  border-radius: 11px !important;
+  font-size: 15px;
+  font-weight: 800 !important;
+}
+
+.insights-auth .ns-auth-card form button[type="submit"]:hover {
+  background: #7ce7fa !important;
+}
+
+/* Register link */
+.insights-auth .ns-auth-card > button[type="button"] {
+  color: #54dafa !important;
+}
+
+/* Back to Map button */
+.insights-auth .ns-auth-card > div:last-child button {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid #344a66 !important;
+  color: #d7e5f6 !important;
+  border-radius: 11px !important;
+}
+
+@media (max-width: 850px) {
+  .insights-auth .insights-auth-content {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 45px 0 75px;
+    min-height: auto;
+  }
+
+  .insights-auth .ns-auth-card {
+    padding: 26px !important;
+  }
+}
