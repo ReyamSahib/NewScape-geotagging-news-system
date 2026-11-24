@@ -820,6 +820,12 @@ function matchesFilters(
 
 
 
+const REPORT_STATUS_LABELS = {
+  pending: 'Pending',
+  dismissed: 'Rejected',
+  article_hidden: 'Accepted',
+}
+
 function AdminReports({ reports, token, onResolved }) {
 
   const [busyReport, setBusyReport] = useState(null)
@@ -828,11 +834,14 @@ function AdminReports({ reports, token, onResolved }) {
 
 
 
+  const pendingReports = reports.filter(report => report.status === 'pending')
+  const reviewedReports = reports.filter(report => report.status !== 'pending')
+
   async function resolve(report, action) {
 
     if (busyReport !== null) return
 
-    if (action === 'hide' && !window.confirm('Hide this article from the public news view?')) return
+    if (action === 'hide' && !window.confirm('Accept this report and hide the news from the map and news list?')) return
 
 
 
@@ -874,60 +883,79 @@ function AdminReports({ reports, token, onResolved }) {
 
 
 
-  return (
+  const summary = [
+    { label: 'Pending review', count: pendingReports.length, tone: 'pending', icon: '◷' },
+    { label: 'Accepted', count: reviewedReports.filter(report => report.status === 'article_hidden').length, tone: 'accepted', icon: '✓' },
+    { label: 'Rejected', count: reviewedReports.filter(report => report.status === 'dismissed').length, tone: 'rejected', icon: '×' },
+  ]
 
+  const groups = [
+    { title: 'Pending review', reports: pendingReports, empty: 'No reports are waiting for review.' },
+    { title: 'Reviewed reports', reports: reviewedReports, empty: 'No reports have been reviewed yet.' },
+  ]
+
+  return (
     <section className="admin-reports">
+      <dl className="admin-summary" aria-label="Report totals">
+        {summary.map(({ label, count, tone, icon }) => (
+          <div className={`admin-summary-card ${tone}`} key={label}>
+            <span className="admin-summary-icon" aria-hidden="true">{icon}</span>
+            <dt>{label}</dt>
+            <dd>{count}</dd>
+          </div>
+        ))}
+      </dl>
 
       {error && <p className="admin-reports-error" role="alert">{error}</p>}
 
-      {!reports.length && <p className="admin-reports-empty">No reports yet.</p>}
-
-      {reports.map(report => (
-
-        <article className="admin-report-card" key={report.report_id}>
-
-          <div className="admin-report-top">
-
-            <h3>{report.title}</h3>
-
-            <span className={`admin-report-status ${report.status}`}>
-
-              {report.status.replaceAll('_', ' ')}
-
-            </span>
-
-          </div>
-
-          <p className="admin-report-reason">{report.reason}</p>
-
-          <p className="admin-report-meta" role="status">
-
-            Report #{report.report_id} · Article #{report.article_id}
-
-            {report.created_at && ` · ${formatDate(report.created_at)}`}
-
-          </p>
-
-          {report.status === 'pending' && (
-
-            <div className="admin-report-actions">
-
-              <button className="admin-dismiss-button" type="button" disabled={busyReport !== null} onClick={() => resolve(report, 'dismiss')}>Dismiss</button>
-
-              <button className="admin-hide-button" type="button" disabled={busyReport !== null} onClick={() => resolve(report, 'hide')}>Hide article</button>
-
-            </div>
-
-          )}
-
-        </article>
-
-      ))}
-
+      <div className="admin-report-columns">
+        {groups.map(({ title, reports: items, empty }, index) => (
+          <section className="admin-report-group" key={title}>
+            <h2>{title} <span>{items.length}</span></h2>
+            {!items.length && (
+              <div className="admin-report-empty-state">
+                {index === 0 && (
+                  <>
+                    <span aria-hidden="true">✓</span>
+                    <strong>You’re all caught up</strong>
+                  </>
+                )}
+                <p>{empty}</p>
+              </div>
+            )}
+            {items.length > 0 && (
+              <div className="admin-report-list" role="region" aria-label={title} tabIndex={0}>
+                {items.map(report => (
+                  <article className="admin-report-card" key={report.report_id}>
+                    <div className="admin-report-top">
+                      <h3>{report.title}</h3>
+                      <div className="admin-report-outcome">
+                        <span className={`admin-report-status ${report.status}`}>
+                          {REPORT_STATUS_LABELS[report.status] ?? report.status}
+                        </span>
+                        {report.status === 'article_hidden' && <small>News hidden</small>}
+                      </div>
+                    </div>
+                    <p className="admin-report-reason"><strong>Report reason</strong> · {report.reason}</p>
+                    <p className="admin-report-meta">
+                      Report #{report.report_id} · News #{report.article_id}
+                      {report.created_at && ` · ${formatDate(report.created_at)}`}
+                    </p>
+                    {report.status === 'pending' && (
+                      <div className="admin-report-actions">
+                        <button className="admin-dismiss-button" type="button" disabled={busyReport !== null} onClick={() => resolve(report, 'dismiss')}>Reject report</button>
+                        <button className="admin-hide-button" type="button" disabled={busyReport !== null} onClick={() => resolve(report, 'hide')}>Accept &amp; hide news</button>
+                      </div>
+                    )}
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        ))}
+      </div>
     </section>
-
   )
-
 }
 
 
@@ -2382,13 +2410,11 @@ function App() {
 
           <span className="insights-label">ADMIN</span>
 
-          <h1>Article Reports</h1>
+          <h1>News Reports</h1>
 
           <p className="insights-admin-intro">
 
-            Review articles reported by users. Dismiss a report to keep
-
-            the article, or hide the article from the map and news list.
+            Review reports submitted by NewScape users.
 
           </p>
 
